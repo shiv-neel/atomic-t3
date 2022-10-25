@@ -1,0 +1,9 @@
+{
+    "git.ignoreLimitWarning": true,
+    "prettier.singleQuote": true,
+    "reactSnippets.settings.prettierEnabled": true,
+    "prettier.jsxSingleQuote": true,
+    "prettier.useTabs": true,
+    "editor.formatOnSave": true,
+    "prettier.semi": false,
+}
