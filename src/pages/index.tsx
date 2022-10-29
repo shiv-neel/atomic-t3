@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import Dashboard from "./dashboard";
-import SignIn from "./signin";
+import SignInPage from "./signin";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     return <Dashboard />;
   }
 
-  return <Box>{session ? <Dashboard /> : <SignIn />}</Box>;
+  return <Box>{session ? <Dashboard /> : <SignInPage />}</Box>;
 };
 
 export default Home;

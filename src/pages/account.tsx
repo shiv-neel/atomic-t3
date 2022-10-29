@@ -1,21 +1,28 @@
 import { Box, Button } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
-import Router from "next/router";
-import React from "react";
-import SignIn from "./signin";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import SignInPage from "./signin";
 
 const Account = () => {
+  const Router = useRouter();
+  const { data: session } = useSession();
   const handleSignOut = () => {
-    signOut();
+    console.log(`signing out ${session!.user!.email}`);
     Router.push("/");
+    signOut();
   };
 
-  const { data: session } = useSession();
   const user = session?.user;
-  if (!user) return <SignIn />;
+  useEffect(() => {
+    if (!user) {
+      Router.push("/signin");
+    }
+  }, [session]);
+
   return (
     <Box>
-      {user.name}
+      {user?.name}
       <Button onClick={handleSignOut}>Sign Out</Button>
     </Box>
   );
