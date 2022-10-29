@@ -12,7 +12,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userEmail         String
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -23,7 +23,7 @@ model Account {
   scope             String?
   id_token          String? //@db.Text
   session_state     String?
-  user              User    @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -31,9 +31,9 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userEmail    String
+  userId       String
   expires      DateTime
-  user         User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -45,25 +45,42 @@ model VerificationToken {
 }
 
 model User {
-  email     String    @id
+  id        String    @id @default(cuid())
+  email     String
   fname     String    @db.VarChar(30)
   lname     String    @db.VarChar(30)
   createdAt DateTime  @default(now())
+  updatedAt DateTime
   Account   Account[]
   Session   Session[]
   Habit     Habit[]
+  provider  String    @default("github")
 }
 
 model Habit {
-  id        String         @id @default(cuid())
-  User      User           @relation(fields: [userEmail], references: [email])
-  userEmail String
-  History   HabitHistory[]
+  id          String         @id @default(cuid())
+  User        User           @relation(fields: [userId], references: [id])
+  userId      String
+  History     HabitHistory[]
+  name        String         @db.VarChar(30)
+  description String
+  cue         String
+  craving     String
+  response    String
+  reward      String
+  stock       Float          @default(10)
+  status      String         @default("_")
+  type        String         @default("daily")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime
+  stashed     Boolean        @default(false)
 }
 
 model HabitHistory {
-  id        String   @id @default(cuid())
-  Habit     Habit    @relation(fields: [habitId], references: [id])
-  habitId   String
-  createdAt DateTime @default(now())
+  id      String   @id @default(cuid())
+  Habit   Habit    @relation(fields: [habitId], references: [id])
+  habitId String
+  date    DateTime @default(now())
+  stock   Float    @default(10)
+  status  String
 }
