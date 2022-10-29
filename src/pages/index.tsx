@@ -7,10 +7,11 @@ import Dashboard from "./dashboard";
 import SignIn from "./signin";
 
 const Home: NextPage = () => {
-  const habit = trpc.habit.getHabitByHid.useQuery({ hid: "asdf" });
-  console.log(habit.data);
-
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const user = session?.user;
+  if (user) {
+    return <Dashboard />;
+  }
 
   return <Box>{session ? <Dashboard /> : <SignIn />}</Box>;
 };
