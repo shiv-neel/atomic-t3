@@ -11,10 +11,8 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import Logo from "./Logo";
-import { useAuth } from "../../server/auth/AuthContext";
 import { useEffect, useState } from "react";
 import { Notification } from "../../models/Notification";
-import { generateNotifications } from "../../utils/notification_resolver";
 import {
   VscAccount,
   VscBell,
@@ -23,21 +21,14 @@ import {
 } from "react-icons/vsc";
 import { BsCircleFill, BsMoon, BsSun } from "react-icons/bs";
 import NotificationsPopover from "../notifications_view/NotificationsPopover";
+import { useSession } from "next-auth/react";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
-  const { user } = useAuth();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  useEffect(() => {
-    const getNotificationsLocal = async () => {
-      if (!user || !user.id) return;
-      const notifications = await generateNotifications(user.id);
-      setNotifications(notifications);
-    };
-    getNotificationsLocal();
-  }, [user]);
 
   return (
     <Box className="flex list-none items-center gap-10 py-5 px-20">
@@ -85,7 +76,7 @@ const Navbar = () => {
       >
         {colorMode === "light" ? <BsSun /> : <BsMoon />}
       </li>
-      <Link href={user && user ? "/account" : "/signin"}>
+      <Link href="/account">
         <li className="cursor-pointer text-3xl font-semibold duration-75 hover:text-blue-600">
           <VscAccount />
         </li>

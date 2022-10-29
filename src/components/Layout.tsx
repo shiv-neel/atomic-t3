@@ -10,11 +10,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 	const { colorMode } = useColorMode()
 	const bgc = colorMode === 'light' ? 'bg-white' : 'bg-black'
 	return (
-		<Box className={`w-full min-h-screen ${bgc}`}>
-			{/* <Navbar /> */}
-			<Box className='mx-48'>{children}</Box>
-		</Box>
-	)
+    <Box className={`min-h-screen w-full ${bgc}`}>
+      <Navbar />
+      <Box className="mx-48">{children}</Box>
+    </Box>
+  );
 }
 
 export default Layout
