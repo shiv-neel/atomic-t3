@@ -48,7 +48,7 @@ model User {
   email     String    @id
   name      String    @db.VarChar(60)
   createdAt DateTime  @default(now())
-  updatedAt DateTime
+  updatedAt DateTime  @default(now())
   Account   Account[]
   Session   Session[]
   Habit     Habit[]
@@ -59,6 +59,7 @@ model Habit {
   id        String         @id @default(cuid())
   User      User           @relation(fields: [userEmail], references: [email])
   userEmail String
+  name      String         @db.VarChar(60)
   History   HabitHistory[]
   cue       String
   craving   String
@@ -67,7 +68,7 @@ model Habit {
   createdAt DateTime       @default(now())
   stock     Float          @default(10)
   type      String
-  stashed   Boolean
+  stashed   Boolean        @default(false)
   duration  Int
   location  String
 }

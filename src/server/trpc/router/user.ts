@@ -18,19 +18,33 @@ export const userRouter = router({
     signUpUser: publicProcedure
         .input(z.object({ email: z.string(), name: z.string() }))
         .mutation(async ({ input }) => {
-            const { data: user, error } = await supabase.from('User').insert([ { email: input.email, name: input.name, createdAt: new Date() } ])
-            if (error) {
-                return error
-            }
-            return user[ 0 ]
+          const { data: user, error } = await supabase.from("User").insert({
+            email: input.email,
+            name: input.name,
+            createdAt: new Date(),
+          });
+          // if (user) {
+          //   console.log(user);
+          // }
+          if (error) {
+            // console.log(error.message);
+            return null;
+          }
+          return user![0];
         }),
     updateLastLogin: publicProcedure
         .input(z.object({ email: z.string() })).mutation(async ({ input }) => {
-            const { data: user, error } = await supabase.from('User').update({ updatedAt: new Date() }).eq('email', input.email)
-            console.log(user)
-            if (error) {
-                return error
-            }
-            return user[ 0 ]
+          const { data: user, error } = await supabase
+            .from("User")
+            .update({ updatedAt: new Date() })
+            .eq("email", input.email);
+          // if (user) {
+          //   console.log(user);
+          // }
+          if (error) {
+            // console.log(error.message);
+            return null;
+          }
+          return user[0];
         }),
 })
