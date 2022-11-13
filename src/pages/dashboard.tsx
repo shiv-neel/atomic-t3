@@ -14,11 +14,22 @@ const Dashboard = () => {
   });
 
   const insertHistory = trpc.history.createFirstHistory.useMutation();
+  const getAllHistory = trpc.history.getHistoryByHid.useQuery({
+    hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
+  });
 
-  const handleInsertHistory = async () => {};
+  const handleInsertHistory = async () => {
+    insertHistory.mutate({
+      hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
+      status: "-",
+      stock: 9.9,
+    });
+  };
+
+  const printHistory = async () => {};
   return (
     <Box>
-      <Button onClick={handleInsertHistory}>insert history</Button>
+      <Button onClick={() => console.log(getAllHistory)}>get history</Button>
     </Box>
   );
 };

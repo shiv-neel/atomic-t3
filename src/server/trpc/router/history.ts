@@ -1,11 +1,12 @@
-import { router, publicProcedure } from "../trpc";
-import { z } from "zod";
-import { createClient } from "@supabase/supabase-js";
+import { router, publicProcedure } from "../trpc"
+import { z } from "zod"
+import { createClient } from "@supabase/supabase-js"
+import { HabitHistory } from '@prisma/client'
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_KEY!
-);
+)
 
 export const historyRouter = router({
   /* QUERIES */
@@ -14,22 +15,27 @@ export const historyRouter = router({
     .query(async ({ input }) => {
       const { data: history, error } = await supabase
         .from("HabitHistory")
-        .select("*")
-        .eq("habitId", input.hid);
+        .select("date, stock")
+        .eq("habitId", input.hid)
       if (error) {
-        console.log(error.message);
-        return error;
+        console.log(error.message)
+        return error
       }
-      return history;
+      const compareDates = (a: HabitHistory, b: HabitHistory) => {
+        if (a.date < b.date) return -1
+        else if (a.date > b.date) return 1
+        return 0
+      }
+      return history.sort((a, b) => compareDates(a, b))
     }),
   /* MUTATIONS */
   createFirstHistory: publicProcedure
-    .input(z.object({ hid: z.string(), status: z.string(), stock: z.number() }))
+    .input(z.object({ hid: z.string(), stock: z.number().nullish(), status: z.string().nullish() }))
     .mutation(async ({ input }) => {
       const { data, error } = await supabase.from("HabitHistory").insert({
         habitId: input.hid,
-        status: input.status,
-        stock: input.stock,
-      });
+        status: input.status || 'o',
+        stock: input.stock || 10
+      })
     }),
-});
+})
