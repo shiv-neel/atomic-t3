@@ -18,7 +18,7 @@ export default async function handler(
 
             if (authorization === `Bearer ${process.env.ATOMIC_API_SECRET}`) {
                 const allUsers: any = trpc.user.getAllUserEmails.useQuery()
-                var users: any[] = []
+                let users: any[] = []
                 const UTCDate = new Date()
                 const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
                 const LocalDate = new Date()

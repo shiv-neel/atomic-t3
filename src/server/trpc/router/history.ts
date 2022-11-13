@@ -55,7 +55,7 @@ export const historyRouter = router({
   createNewHistoryAndUpdateHabit: publicProcedure.input(z.object({ hid: z.string(), status: z.string() })).mutation(async ({ input }) => {
     const caller = dataRouter.createCaller({})
     const lastStock: number = await caller.getCurrentStockValue({ hid: input.hid })
-    var newStock = lastStock
+    let newStock = lastStock
     input.status === '+' ? newStock = lastStock * 1.01 : newStock = lastStock * 0.99
     if (input.status === '+') {
       newStock = lastStock * 1.01
