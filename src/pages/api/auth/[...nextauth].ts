@@ -1,5 +1,5 @@
-import NextAuth from "next-auth"
-import GithubProvider from "next-auth/providers/github"
+import NextAuth from 'next-auth'
+import GithubProvider from 'next-auth/providers/github'
 const providers = [
   GithubProvider({
     clientId: process.env.GITHUB_ID!,
@@ -8,7 +8,7 @@ const providers = [
 ]
 
 export default NextAuth({
-  providers: providers,
+  providers,
   callbacks: {},
   secret: process.env.NEXTAUTH_SECRET,
 })

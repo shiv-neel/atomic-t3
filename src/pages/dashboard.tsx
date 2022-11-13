@@ -2,6 +2,7 @@ import { Box, Button } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
+import Chart from '../components/Chart'
 import { trpc } from '../utils/trpc'
 
 const Dashboard = () => {
@@ -13,40 +14,34 @@ const Dashboard = () => {
 		}
 	})
 
-  const insertHistory = trpc.history.createFirstHistory.useMutation();
-  const getAllHistory = trpc.history.getHistoryByHid.useQuery({
-    hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
-  });
-
-  const handleInsertHistory = async () => {
-    insertHistory.mutate({
-      hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
-      status: "-",
-      stock: 9.9,
-    });
-  };
-
-	const handleInsertHabit = async () => {
-		try {
-			insertHabit.mutate({
-				craving: 'b',
-				cue: 'b',
-				duration: 4,
-				location: 'v',
-				name: 'b',
-				response: 'c',
-				reward: 'v',
-				type: 'morning',
-				userEmail: 'shiv.neel1622@gmail.com',
-				stashed: false,
-			})
-		} catch (err) {
-			console.log(err)
-		}
+	const newHabitAndFirstHistory = trpc.habit.createHabit.useMutation()
+	const handler = () => {
+		newHabitAndFirstHistory.mutate({
+			userEmail: 'shiv.neel@gmail.com',
+			name: 'diff habit 2',
+			cue: 'Time is 8pm',
+			craving: 'f',
+			response: 'b',
+			reward: 'q',
+			duration: 10,
+			location: 'home',
+			type: 'morning',
+			stashed: false,
+		})
 	}
+
+	const newHistoryAndUpdateHabit =
+		trpc.history.createNewHistoryAndUpdateHabit.useMutation()
+	const handler2 = () => {
+		newHistoryAndUpdateHabit.mutate({
+			hid: 'a8c649ad-7465-4133-aafa-0acf002d9665',
+			status: '+',
+		})
+	}
+
 	return (
-		<Box>
-			<Button onClick={handleInsertHabit}>insert habit</Button>
+		<Box onClick={handler2}>
+			<Button>click me</Button>
 		</Box>
 	)
 }

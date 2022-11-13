@@ -53,7 +53,7 @@ model User {
   Session   Session[]
   Habit     Habit[]
   provider  String    @default("github")
-  GMTOffset Int @default(-6)
+  UTCOffset Int @default(-6)
 }
 
 model Habit {
@@ -61,18 +61,18 @@ model Habit {
   User      User           @relation(fields: [userEmail], references: [email])
   userEmail String
   name      String         @db.VarChar(60)
+  stock     Float          @default(10)
   History   HabitHistory[]
   cue       String
   craving   String
   response  String
   reward    String
   createdAt DateTime       @default(now())
-  stock     Float          @default(10)
-  status    String         @default("_")
+  status    String         @default("?")
   type      String
   stashed   Boolean        @default(false)
   duration  Int
-  location  String
+  location  String         @default("Anywhere")
 }
 
 model HabitHistory {

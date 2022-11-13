@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!)
 
 export const userRouter = router({
+  /* QUERIES */
     getUserById: publicProcedure
         .input(z.object({ email: z.string() }))
         .query(async ({ input }) => {
@@ -15,6 +16,15 @@ export const userRouter = router({
             }
             return users![ 0 ]
         }),
+  getAllUserEmails: publicProcedure.query(async ({ input }) => {
+    const { data: users, error } = await supabase.from('User').select('*')
+    if (error) {
+      console.log(error.message)
+      return null
+    }
+    return users
+  }),
+      /* MUTATIONS */
     signUpUser: publicProcedure
         .input(z.object({ email: z.string(), name: z.string() }))
         .mutation(async ({ input }) => {

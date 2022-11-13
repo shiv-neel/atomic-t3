@@ -2,6 +2,7 @@ import { router, publicProcedure } from "../trpc"
 import { z } from "zod"
 import { createClient } from '@supabase/supabase-js'
 import { Habit } from "@prisma/client";
+import { historyRouter } from './history'
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -53,15 +54,23 @@ export const habitRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const { data: habits, error } = await supabase
-        .from("Habit")
-        .insert([input]);
-      if (error) {
-        return error;
+      const { data: duplicateHabit, error: duplicateHabitError } = await supabase.from('Habit').select('*').match({ 'userEmail': input.userEmail, 'name': input.name })
+      if (duplicateHabit && duplicateHabit.length) {
+        const error = { status: 400, message: 'Duplicated Habit' }
+        console.log(duplicateHabit)
+        console.log(error)
+        return
       }
-      return null;
+      const { data: habit, error } = await supabase
+        .from('Habit')
+        .insert(input)
+      if (error) {
+        return error
+      }
+      const historyCaller = historyRouter.createCaller({})
+      const result = await historyCaller.createFirstHistory({ status: 'o', hid: habit[ 0 ].id })
     }),
-  updateHabit: publicProcedure
+  updateHabitMetadata: publicProcedure
     .input(
       z.object({
         hid: z.string(),
