@@ -13,7 +13,18 @@ const Dashboard = () => {
 		}
 	})
 
-	const insertHabit = trpc.habit.createHabit.useMutation()
+  const insertHistory = trpc.history.createFirstHistory.useMutation();
+  const getAllHistory = trpc.history.getHistoryByHid.useQuery({
+    hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
+  });
+
+  const handleInsertHistory = async () => {
+    insertHistory.mutate({
+      hid: "a8c649ad-7465-4133-aafa-0acf002d9665",
+      status: "-",
+      stock: 9.9,
+    });
+  };
 
 	const handleInsertHabit = async () => {
 		try {
