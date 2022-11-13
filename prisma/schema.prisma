@@ -53,10 +53,11 @@ model User {
   Session   Session[]
   Habit     Habit[]
   provider  String    @default("github")
+  GMTOffset Int @default(-6)
 }
 
 model Habit {
-  id        String         @id @default(cuid())
+  id        String         @id @default(uuid())
   User      User           @relation(fields: [userEmail], references: [email])
   userEmail String
   name      String         @db.VarChar(60)
@@ -67,6 +68,7 @@ model Habit {
   reward    String
   createdAt DateTime       @default(now())
   stock     Float          @default(10)
+  status    String         @default("_")
   type      String
   stashed   Boolean        @default(false)
   duration  Int
@@ -74,7 +76,7 @@ model Habit {
 }
 
 model HabitHistory {
-  id      String   @id @default(cuid())
+  id      String   @id @default(uuid())
   Habit   Habit    @relation(fields: [habitId], references: [id])
   habitId String
   date    DateTime @default(now())

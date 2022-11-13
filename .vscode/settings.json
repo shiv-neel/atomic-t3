@@ -1,4 +1,8 @@
 {
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true
+      },
     "git.ignoreLimitWarning": true,
     "prettier.singleQuote": true,
     "reactSnippets.settings.prettierEnabled": true,
@@ -6,4 +10,5 @@
     "prettier.useTabs": true,
     "editor.formatOnSave": true,
     "prettier.semi": false,
+    "editor.formatOnSaveMode": "modifications",
 }
