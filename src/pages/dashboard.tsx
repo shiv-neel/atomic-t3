@@ -3,6 +3,8 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import Chart from '../components/Chart'
+import RightHandHabitsPanel from '../components/dashboard/rhp/RightHandHabitsPanel'
+import TimeSeriesMain from '../components/habitpage/TimeSeriesMain'
 import { trpc } from '../utils/trpc'
 
 const Dashboard = () => {
@@ -31,17 +33,19 @@ const Dashboard = () => {
 	}
 
 	const newHistoryAndUpdateHabit =
-		trpc.history.createNewHistoryAndUpdateHabit.useMutation()
+		trpc.history.createHistoryAndUpdateStock.useMutation()
+
 	const handler2 = () => {
 		newHistoryAndUpdateHabit.mutate({
 			hid: 'a8c649ad-7465-4133-aafa-0acf002d9665',
-			status: '+',
+			status: '-',
 		})
 	}
 
 	return (
-		<Box onClick={handler2}>
-			<Button>click me</Button>
+		<Box>
+			{/* <RightHandHabitsPanel /> */}
+			<TimeSeriesMain hid='a8c649ad-7465-4133-aafa-0acf002d9665' range='5d' />
 		</Box>
 	)
 }

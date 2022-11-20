@@ -13,13 +13,12 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Router from "next/router";
-import React, { useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { MdOutlineWatchLater } from "react-icons/md";
-import { useAuth } from "../../server/auth/AuthContext";
-import { Habit } from "../../models/Habit";
-import { createNewHabit } from "../../utils/habit_resolver";
+import { useSession } from 'next-auth/react'
+import Router from 'next/router'
+import React, { useState } from 'react'
+import { BsPlusLg } from 'react-icons/bs'
+import { MdOutlineWatchLater } from 'react-icons/md'
+import { Habit } from '../../models/Habit'
 
 interface NewHabitFormProps {
   text: string;
@@ -27,7 +26,8 @@ interface NewHabitFormProps {
 }
 
 const NewHabitForm: React.FC<NewHabitFormProps> = ({ text, onClose }) => {
-  const user = useAuth().user;
+  const { data: session } = useSession()
+	const user = session?.user
   const [name, setName] = useState<string>("");
   const [cue, setCue] = useState<string>("");
   const [craving, setCraving] = useState<string>("");
@@ -41,51 +41,42 @@ const NewHabitForm: React.FC<NewHabitFormProps> = ({ text, onClose }) => {
     key === "morning" ? "morning" : key === "daily" ? "daily" : "night";
 
   const addNewHabit = async () => {
-    setLoading(true);
-    if (!name) {
-      setError("Name is required.");
-      setLoading(false);
-      return;
-    }
-    if (!cue) {
-      setError("Cue is required.");
-      setLoading(false);
-      return;
-    }
-    if (!craving) {
-      setError("Craving is required.");
-      setLoading(false);
-      return;
-    }
-    if (!response) {
-      setError("Response is required.");
-      setLoading(false);
-      return;
-    }
-    if (!reward) {
-      setError("Reward is required.");
-      setLoading(false);
-      return;
-    }
-    const habit: Habit = {
-      uid: user!.id,
-      hname: name,
-      cue: cue,
-      craving: craving,
-      response: response,
-      reward: reward,
-      type: type,
-    };
-    const newHabitResponse: Habit | string = await createNewHabit(habit);
-    if (typeof newHabitResponse === "string") {
-      setError(newHabitResponse);
-      setLoading(false);
-      return;
-    }
-    setLoading(false);
-    onClose();
-    Router.push(`/habits/${newHabitResponse.hid}`);
-  };
+		setLoading(true)
+		if (!name) {
+			setError('Name is required.')
+			setLoading(false)
+			return
+		}
+		if (!cue) {
+			setError('Cue is required.')
+			setLoading(false)
+			return
+		}
+		if (!craving) {
+			setError('Craving is required.')
+			setLoading(false)
+			return
+		}
+		if (!response) {
+			setError('Response is required.')
+			setLoading(false)
+			return
+		}
+		if (!reward) {
+			setError('Reward is required.')
+			setLoading(false)
+			return
+		}
+		// const newHabitResponse: Habit | string = await createNewHabit(habit);
+		// if (typeof newHabitResponse === "string") {
+		//   setError(newHabitResponse);
+		//   setLoading(false);
+		//   return;
+		// }
+		// setLoading(false);
+		// onClose();
+		// Router.push(`/habits/${newHabitResponse.hid}`);
+	};
 
   return (
     <Box>

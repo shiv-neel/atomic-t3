@@ -11,7 +11,7 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react'
 import { BsPlusLg } from 'react-icons/bs'
-import NewHabitForm from './NewHabitForm'
+import NewHabitForm from '../../habits_panel_view/NewHabitForm'
 
 interface TitleProps {
 	text: string
@@ -21,10 +21,10 @@ interface TitleProps {
 const Title: React.FC<TitleProps> = ({ text, icon }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	return (
-		<Box className='flex flex-col w-full'>
-			<Box className='flex items-center justify-between mt-10'>
+		<Box className='flex w-full flex-col'>
+			<Box className='mt-10 flex items-center justify-between'>
 				<Box
-					className='font-bold flex items-center gap-2 text-lg'
+					className='flex items-center gap-2 text-lg font-bold'
 					textColor={'messenger.500'}
 				>
 					{icon}
