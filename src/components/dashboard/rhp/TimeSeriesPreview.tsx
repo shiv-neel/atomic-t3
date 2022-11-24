@@ -1,6 +1,7 @@
 import { Box } from '@chakra-ui/react'
 import { Bump } from '@nivo/bump'
 import { trpc } from '../../../utils/trpc'
+import { Delta } from '../../../utils/types'
 
 interface Props {
 	hid: string
@@ -12,8 +13,8 @@ const TimeSeriesPreview: React.FC<Props> = ({ hid }) => {
 		range: 5,
 	}).data!
 
-	const delta = trpc.data.getPercentChangeOverRange.useQuery({ hid, range: 1 })
-		.data?.percentChange!
+	const delta: Delta = trpc.data.getDeltaOverRange.useQuery({ hid, range: 1 })
+		.data!
 
 	return (
 		<Box>
@@ -22,7 +23,7 @@ const TimeSeriesPreview: React.FC<Props> = ({ hid }) => {
 					<Bump
 						data={data}
 						xPadding={0.6}
-						colors={[delta < 0 ? '#dc2626' : '#16a34a']}
+						colors={[delta.percentChange < 0 ? '#dc2626' : '#16a34a']}
 						lineWidth={2}
 						activeLineWidth={4}
 						inactiveLineWidth={2}

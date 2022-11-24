@@ -12,22 +12,26 @@ export interface TimeSeriesPlotProps {
 }
 
 const TimeSeriesMain: React.FC<TimeSeriesPlotProps> = ({ hid, range }) => {
+	const [data, setData] = useState<any[]>([])
+	const [delta, setDelta] = useState<any>()
 	const [showAxes, setShowAxes] = useState<boolean>(false)
 	const [submitted, setSubmitted] = useState<boolean>(false)
 
-	const data: any = trpc.data.getDataObjectOverRange.useQuery({
+	const _data: any = trpc.data.getDataObjectOverRange.useQuery({
 		hid,
 		range: 5,
 	}).data!
 
-	const delta = trpc.data.getPercentChangeOverRange.useQuery({
+	const _delta = trpc.data.getDeltaOverRange.useQuery({
 		hid,
 		range: 1,
 	}).data!
 
 	useEffect(() => {
-		if (!delta) return
-	}, [delta])
+		if (!_data || !_delta) return
+		setData(_data)
+		setDelta(_delta)
+	}, [_data, _delta])
 
 	return (
 		<Box h={'sm'}>
@@ -44,11 +48,17 @@ const TimeSeriesMain: React.FC<TimeSeriesPlotProps> = ({ hid, range }) => {
 				</Box>
 				<Box
 					className={`text-${
-						delta.valueChange < 0 ? 'red' : 'green'
+						delta && delta.valueChange && delta.valueChange < 0
+							? 'red'
+							: 'green'
 					}-600 flex items-center`}
 				>
-					<p className='mr-2 font-bold'>${delta.valueChange.toFixed(2)}</p>
-					<p>{delta.percentChange.toFixed(2)}%</p>
+					<p className='mr-2 font-bold'>
+						${delta && delta.valueChange && delta.valueChange.toFixed(2)}
+					</p>
+					<p>
+						{delta && delta.valueChange ? delta.percentChange.toFixed(2) : 0}%
+					</p>
 				</Box>
 				<p className='ml-2'>{RANGE[range].string}</p>
 				<TimeSeriesPlot

@@ -44,7 +44,7 @@ const Dashboard = () => {
 
 	return (
 		<Box>
-			{/* <RightHandHabitsPanel /> */}
+			<RightHandHabitsPanel />
 			<TimeSeriesMain hid='a8c649ad-7465-4133-aafa-0acf002d9665' range='5d' />
 		</Box>
 	)

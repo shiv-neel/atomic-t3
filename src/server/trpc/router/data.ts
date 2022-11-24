@@ -27,7 +27,7 @@ export const dataRouter = router({
         const sum = habits.reduce((s: number, habit: Habit) => s + habit.stock, 0)
         return sum
     }),
-    getPercentChangeOverRange: publicProcedure.input(z.object({ hid: z.string(), range: z.number() })).query(async ({ input }) => {
+    getDeltaOverRange: publicProcedure.input(z.object({ hid: z.string(), range: z.number() })).query(async ({ input }) => {
         const { data: history, error } = await supabase.from('HabitHistory').select('stock').eq('habitId', input.hid).order('date', { ascending: false })
         let start = 0
         let end = 0

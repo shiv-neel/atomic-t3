@@ -17,7 +17,7 @@ const HabitSummaryCard: React.FC<HabitType> = ({ habit }) => {
 
 	const _stock = trpc.data.getCurrentStockValue.useQuery({ hid: habit.id }).data
 
-	const _percentChange = trpc.data.getPercentChangeOverRange.useQuery({
+	const _percentChange = trpc.data.getDeltaOverRange.useQuery({
 		hid: habit.id,
 		range: 1,
 	}).data
