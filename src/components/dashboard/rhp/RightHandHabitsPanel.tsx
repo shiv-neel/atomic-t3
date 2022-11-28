@@ -29,9 +29,7 @@ const RightHandHabitsPanel = () => {
 		<Box
 			className={`flex w-72 flex-col items-center justify-between rounded-md p-4 shadow-md ${bgc} bg-sl invisible w-0 md:visible md:w-full`}
 		>
-			<Heading as='h2' size='md' className='w-full justify-start'>
-				Habits
-			</Heading>
+			<Box className='w-full justify-center pt-2 text-xl font-bold'>Habits</Box>
 			<Title text='Morning Habit Stack' icon={<BsCloudSun />} />
 			<Box>
 				{habits ? (

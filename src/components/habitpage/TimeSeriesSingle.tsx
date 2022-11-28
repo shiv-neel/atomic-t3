@@ -8,7 +8,7 @@ import { HidProps, Range } from '../../utils/types'
 import RangeButtons from './RangeButtons'
 import TimeSeriesPlot from './TimeSeriesPlot'
 
-const TimeSeriesMain: React.FC<HidProps> = ({ hid }) => {
+const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 	const [hname, setHname] = useState('')
 	const [data, setData] = useState<any[]>([])
 	const [delta, setDelta] = useState<any>()
@@ -82,4 +82,4 @@ const TimeSeriesMain: React.FC<HidProps> = ({ hid }) => {
 	)
 }
 
-export default TimeSeriesMain
+export default TimeSeriesSingle

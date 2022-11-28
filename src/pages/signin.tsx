@@ -1,9 +1,9 @@
-import { Box, Button } from "@chakra-ui/react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { BsGithub } from "react-icons/bs";
-import { trpc } from "../utils/trpc";
+import { Box, Button } from '@chakra-ui/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
+import { BsGithub } from 'react-icons/bs'
+import { trpc } from '../utils/trpc'
 
 const SignInPage = () => {
 	const { data: session } = useSession()
@@ -50,4 +50,4 @@ const SignInPage = () => {
 	)
 }
 
-export default SignInPage;
+export default SignInPage

@@ -20,29 +20,31 @@ export default async function handler(
 
             if (authorization === `Bearer ${process.env.ATOMIC_API_SECRET}`) {
                 const allUsers: User[] = await userCaller.getAllUsers()
-                if (!allUsers) return res.status(400).json({ error: 'No users found' })
-                const userEmails: string[] = allUsers.map((user: any) => user.email)
-                // const userEmails: string[] = []
-                // const UTCDate = new Date()
-                // const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
-                // const LocalDate = new Date()
-                // const LocalDateTimeStamp = [ LocalDate.getHours(), LocalDate.getMinutes(), LocalDate.getFullYear() ]
+                const localUserEmails: string[] = []
 
-                // allUsers.forEach((user: any) => {
-                //     if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
-                //         userEmails.push(user.email)
-                //     }
-                // })
+                const UTCDate = new Date()
+                const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
+
+                const LocalDate = new Date()
+                const LocalDateTimeStamp = [ LocalDate.getHours(), LocalDate.getMinutes(), LocalDate.getFullYear() ]
+
+                for (const user of allUsers) {
+                    if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
+                        localUserEmails.push(user.email)
+                    }
+                }
+
                 const habits: any[] = []
-                userEmails.forEach(async (email: string) => {
+                for (const email of localUserEmails) {
                     const userHabits = await habitCaller.getHabitsByEmail({ email })
                     habits.push(...userHabits)
-                })
-                // TODO: figure out why habits array gets cleared after forEach loop
-                res.status(200).json({ userEmails })
-                habits.forEach(async (habit: any) => {
+                }
+
+                for (const habit of habits) {
                     await historyCaller.createHistoryAndUpdateStock({ hid: habit.id, status: habit.status })
-                })
+                }
+
+                res.status(200).json({ success: habits })
             } else {
                 res.status(401).json({ success: false })
             }

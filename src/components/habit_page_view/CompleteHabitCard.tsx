@@ -27,17 +27,17 @@ import {
 } from 'react-icons/bs'
 import { FaRegPaperPlane } from 'react-icons/fa'
 import { BiLockAlt } from 'react-icons/bi'
-import { Habit } from '../../models/Habit'
 import { IconType } from 'react-icons'
-import { supabase } from '../../utils/supabase'
-import { updateTodaysHistory } from '../../utils/habit_resolver'
+import { trpc } from '../../utils/trpc'
+import { historyRouter } from '../../server/trpc/router/history'
+import { Habit } from '@prisma/client'
 
 interface CompleteHabitCardProps {
-	habit: Habit | undefined
+	habit: Habit
 	submitted: boolean
-	status: '+' | '-' | 'o' | ''
+	status: '+' | '-' | 'o' | '?'
 	setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
-	setStatus: React.Dispatch<React.SetStateAction<'+' | '-' | 'o' | ''>>
+	setStatus: React.Dispatch<React.SetStateAction<'+' | '-' | 'o' | '?'>>
 }
 
 const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
@@ -60,36 +60,38 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 	} as { [key in string]: JSX.Element }
 
 	useEffect(() => {
+		// set status and submitted properties upon mount
 		if (!habit) return
 		if (habit.status === '+' || habit.status === '-' || habit.status === 'o') {
 			setStatus(habit.status)
 			setSubmitted(true)
 		} else {
-			setStatus('')
+			setStatus('?')
 			setSubmitted(false)
 		}
 	}, [habit])
 
 	const updateStatus = async () => {
-		if (status === '' && submitted) return
+		if (status === '?' || submitted) return
 		setLoading(true)
-		const history = await updateTodaysHistory(habit!.hid!, status)
+		const historyCaller = historyRouter.createCaller({})
+		const history = await historyCaller.createHistoryAndUpdateStock({hid: habit.id, status})
 		setSubmitted(true)
 		setLoading(false)
 		onClose()
 	}
 
 	return (
-		<Box className={`flex flex-col w-72 p-4 rounded-md shadow-md ${bgc}`}>
+		<Box className={`flex w-72 flex-col rounded-md p-4 shadow-md ${bgc}`}>
 			<Box
 				fontFamily={'Karla'}
-				className='text-xl font-bold text-center mt-4 mb-12 flex items-center gap-2 justify-center'
+				className='mt-4 mb-12 flex items-center justify-center gap-2 text-center text-xl font-bold'
 			>
 				<BsCalendar />
 				{new Date().toDateString()}
 			</Box>
-			<Box className='flex flex-col justify-start text-sm items-center'>
-				<Box className='flex items-center justify-center gap-2 mb-8'>
+			<Box className='flex flex-col items-center justify-start text-sm'>
+				<Box className='mb-8 flex items-center justify-center gap-2'>
 					<Box className='text-lg'>Submit Today&apos;s Status</Box>
 					<Popover>
 						<PopoverTrigger>
@@ -101,7 +103,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 							<PopoverArrow />
 							<PopoverCloseButton />
 							<PopoverHeader>Status Types</PopoverHeader>
-							<PopoverBody className='flex flex-col space-y-5 my-5'>
+							<PopoverBody className='my-5 flex flex-col space-y-5'>
 								<Box className='text-md flex gap-2 font-semibold'>
 									<BsPlusCircle size='20' /> Successfully completed habit
 								</Box>
@@ -121,7 +123,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 						variant='unstyled'
 						color={status === '+' ? 'messenger.500' : ''}
 						rounded={100}
-						className={`hover:scale-110 cursor-pointer ${
+						className={`cursor-pointer hover:scale-110 ${
 							status === '+' ? 'shadow-xl' : 'shadow-sm'
 						}`}
 						onClick={() => setStatus('+')}
@@ -133,7 +135,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 						variant='unstyled'
 						color={status === '-' ? 'messenger.500' : ''}
 						rounded={100}
-						className={`hover:scale-110 cursor-pointer ${
+						className={`cursor-pointer hover:scale-110 ${
 							status === '-' ? 'shadow-xl' : 'shadow-sm'
 						}`}
 						onClick={() => setStatus('-')}
@@ -145,7 +147,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 						variant='unstyled'
 						color={status === 'o' ? 'messenger.500' : ''}
 						rounded={100}
-						className={`hover:scale-110 cursor-pointer ${
+						className={`cursor-pointer hover:scale-110 ${
 							status === 'o' ? 'shadow-xl' : 'shadow-sm'
 						}`}
 						onClick={() => setStatus('o')}
@@ -155,9 +157,9 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 				</Box>
 				<Box className='flex justify-center'>
 					<Button
-						className='flex gap-2 mt-4'
+						className='mt-4 flex gap-2'
 						onClick={onOpen}
-						isDisabled={(status === '' && !submitted) || submitted}
+						isDisabled={submitted}
 						colorScheme='messenger'
 					>
 						{submitted ? (

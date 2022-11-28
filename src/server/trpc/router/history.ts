@@ -51,7 +51,9 @@ export const historyRouter = router({
     if (error) console.log(error)
   }),
   createHistoryAndUpdateStock: publicProcedure.input(z.object({ hid: z.string(), status: z.string() })).mutation(async ({ input }) => {
+    const historyCaller = historyRouter.createCaller({})
     const dataCaller = dataRouter.createCaller({})
+
     const lastStock = await dataCaller.getCurrentStockValue({ hid: input.hid })
     let newStock = lastStock.stock
     if (input.status === '+') {
@@ -60,10 +62,9 @@ export const historyRouter = router({
     else if (input.status === '-' || input.status === '?') {
       newStock *= 0.99
     }
-    const historyCaller = historyRouter.createCaller({})
-    await historyCaller.createNewHistory({ hid: input.hid, stock: newStock, status: input.status })
 
-    await supabase.from('Habit').update({ stock: newStock, status: input.status }).match({ id: input.hid })
+    await historyCaller.createNewHistory({ hid: input.hid, stock: newStock, status: input.status })
+    await supabase.from('Habit').update({ stock: newStock, status: '?' }).match({ id: input.hid })
   }),
   resetStatusDaily: publicProcedure.input(z.object({ hid: z.string() })).mutation(async ({ input }) => {
     await supabase.from('Habit').update({ status: '?' }).match({ id: input.hid })

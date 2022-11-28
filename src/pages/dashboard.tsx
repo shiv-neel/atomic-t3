@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import Chart from '../components/Chart'
 import RightHandHabitsPanel from '../components/dashboard/rhp/RightHandHabitsPanel'
-import TimeSeriesMain from '../components/habitpage/TimeSeriesMain'
+import TimeSeriesGlobal from '../components/habitpage/TimeSeriesGlobal'
 import { trpc } from '../utils/trpc'
 
 const Dashboard = () => {
@@ -45,9 +45,9 @@ const Dashboard = () => {
 	return (
 		<Box className='mx-auto flex justify-center md:justify-evenly'>
 			<Box className='w-1/2'>
-				<TimeSeriesMain hid='a8c649ad-7465-4133-aafa-0acf002d9665' />
+				<TimeSeriesGlobal hid='a8c649ad-7465-4133-aafa-0acf002d9665' />
 			</Box>
-			<Box className=''>
+			<Box className='border-t-black'>
 				<RightHandHabitsPanel />
 			</Box>
 		</Box>
