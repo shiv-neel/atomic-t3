@@ -4,18 +4,16 @@ import React, { useEffect, useState } from 'react'
 import { BsFillCaretDownFill, BsFillCaretUpFill } from 'react-icons/bs'
 import { RANGE } from '../../utils/constants'
 import { trpc } from '../../utils/trpc'
+import { HidProps, Range } from '../../utils/types'
+import RangeButtons from './RangeButtons'
 import TimeSeriesPlot from './TimeSeriesPlot'
 
-export interface TimeSeriesPlotProps {
-	hid: string
-	range: '5d' | '10d' | '1m' | '3m' | '1y' | 'all'
-}
-
-const TimeSeriesMain: React.FC<TimeSeriesPlotProps> = ({ hid, range }) => {
+const TimeSeriesMain: React.FC<HidProps> = ({ hid }) => {
+	const [hname, setHname] = useState('')
 	const [data, setData] = useState<any[]>([])
 	const [delta, setDelta] = useState<any>()
+	const [range, setRange] = useState<Range>('5d')
 	const [showAxes, setShowAxes] = useState<boolean>(false)
-	const [submitted, setSubmitted] = useState<boolean>(false)
 
 	const _data: any = trpc.data.getDataObjectOverRange.useQuery({
 		hid,
@@ -27,15 +25,21 @@ const TimeSeriesMain: React.FC<TimeSeriesPlotProps> = ({ hid, range }) => {
 		range: 1,
 	}).data!
 
+	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data?.name!
+
 	useEffect(() => {
 		if (!_data || !_delta) return
 		setData(_data)
 		setDelta(_delta)
+		setHname(_hname)
 	}, [_data, _delta])
 
+	useEffect(() => {})
+
 	return (
-		<Box h={'sm'}>
-			<Box className='flex items-center gap-1'>
+		<Box className='flex flex-col'>
+			<Box className='mb-3 text-3xl font-bold'>{_hname}</Box>
+			<Box className='mb-3 flex items-center gap-1'>
 				<Box>
 					{delta && delta.valueChange && delta.valueChange < 0 ? (
 						<BsFillCaretDownFill className='text-red-600' />
@@ -61,14 +65,19 @@ const TimeSeriesMain: React.FC<TimeSeriesPlotProps> = ({ hid, range }) => {
 					</p>
 				</Box>
 				<p className='ml-2'>{RANGE[range].string}</p>
-				<TimeSeriesPlot
-					delta={delta}
-					data={data}
-					range={range}
-					showAxes={showAxes}
-					submitted={submitted}
-				/>
 			</Box>
+			<TimeSeriesPlot
+				delta={delta}
+				data={data}
+				range={range}
+				showAxes={showAxes}
+			/>
+			<RangeButtons
+				range={range}
+				setRange={setRange}
+				showAxes={showAxes}
+				setShowAxes={setShowAxes}
+			/>
 		</Box>
 	)
 }

@@ -5,12 +5,9 @@ import Link from 'next/link'
 import { Habit } from '@prisma/client'
 import { trpc } from '../../../utils/trpc'
 import TimeSeriesPreview from './TimeSeriesPreview'
+import { HabitProps } from '../../../utils/types'
 
-interface HabitType {
-	habit: Habit
-}
-
-const HabitSummaryCard: React.FC<HabitType> = ({ habit }) => {
+const HabitSummaryCard: React.FC<HabitProps> = ({ habit }) => {
 	const [percentChange, setPercentChange] = useState<number>(0)
 	const [stock, setStock] = useState<number>(0)
 	const [status, setStatus] = useState<boolean>(false)

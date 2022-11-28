@@ -43,9 +43,13 @@ const Dashboard = () => {
 	}
 
 	return (
-		<Box>
-			<RightHandHabitsPanel />
-			<TimeSeriesMain hid='a8c649ad-7465-4133-aafa-0acf002d9665' range='5d' />
+		<Box className='mx-auto flex justify-center md:justify-evenly'>
+			<Box className='w-1/2'>
+				<TimeSeriesMain hid='a8c649ad-7465-4133-aafa-0acf002d9665' />
+			</Box>
+			<Box className=''>
+				<RightHandHabitsPanel />
+			</Box>
 		</Box>
 	)
 }

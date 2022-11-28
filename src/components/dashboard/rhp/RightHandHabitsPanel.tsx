@@ -19,7 +19,7 @@ const RightHandHabitsPanel = () => {
 	const { data: session } = useSession()
 
 	const habits = trpc.habit.getHabitsByEmail.useQuery({
-		email: session?.user?.email!,
+		email: session?.user!.email!,
 	}).data
 
 	const { colorMode } = useColorMode()
@@ -27,7 +27,7 @@ const RightHandHabitsPanel = () => {
 
 	return (
 		<Box
-			className={`flex w-72 flex-col items-center justify-between rounded-md p-4 shadow-md ${bgc} bg-sl`}
+			className={`flex w-72 flex-col items-center justify-between rounded-md p-4 shadow-md ${bgc} bg-sl invisible w-0 md:visible md:w-full`}
 		>
 			<Heading as='h2' size='md' className='w-full justify-start'>
 				Habits

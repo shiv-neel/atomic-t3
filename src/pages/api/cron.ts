@@ -18,7 +18,7 @@ export default async function handler(
 
             if (authorization === `Bearer ${process.env.ATOMIC_API_SECRET}`) {
                 const allUsers: any = trpc.user.getAllUserEmails.useQuery()
-                let users: any[] = []
+                const userEmails: string[] = []
                 const UTCDate = new Date()
                 const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
                 const LocalDate = new Date()
@@ -26,14 +26,14 @@ export default async function handler(
 
                 allUsers.forEach((user: any) => {
                     if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
-                        users.push(user)
+                        userEmails.push(user.email)
                     }
                 })
 
-                users.forEach(async (user: any) => {
-                    const habits: any = trpc.habit.getHabitsByEmail.useQuery(user.email)
+                userEmails.forEach(async (email: any) => {
+                    const habits: any = trpc.habit.getHabitsByEmail.useQuery(email)
                     habits.forEach(async (habit: any) => {
-                        const mutation = trpc.history.createNewHistoryAndUpdateHabit.useMutation()
+                        const mutation = trpc.history.createHistoryAndUpdateStock.useMutation()
                         mutation.mutate({ hid: habit.id, status: habit.status })
                     })
                 })

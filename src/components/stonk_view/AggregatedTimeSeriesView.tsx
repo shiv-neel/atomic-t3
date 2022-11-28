@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@chakra-ui/react";
 import { BumpDatum } from "@nivo/bump";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../server/auth/AuthContext";
-import RangeButtons from "./RangeButtons";
+import RangeButtons from '../habitpage/RangeButtons'
 import TimeSeriesPlot from "./TimeSeriesPlot";
 
 interface AggregatedTimeSeriesViewProps {

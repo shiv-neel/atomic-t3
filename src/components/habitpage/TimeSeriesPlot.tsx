@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react'
 import { Bump, ResponsiveBump } from '@nivo/bump'
+import { Line, ResponsiveLine } from '@nivo/line'
 import React from 'react'
-import { trpc } from '../../utils/trpc'
 import { Delta } from '../../utils/types'
 
 interface TimeSeriesPlotProps {
@@ -9,7 +9,6 @@ interface TimeSeriesPlotProps {
 	delta: Delta | undefined
 	range: '5d' | '10d' | '1m' | '3m' | '1y' | 'all'
 	showAxes: boolean
-	submitted?: boolean
 }
 
 const TimeSeriesPlot: React.FC<TimeSeriesPlotProps> = ({
@@ -17,11 +16,10 @@ const TimeSeriesPlot: React.FC<TimeSeriesPlotProps> = ({
 	delta,
 	range,
 	showAxes,
-	submitted,
 }) => {
 	return (
-		<Box h={'400px'}>
-			<Bump
+		<Box h={'360px'}>
+			<ResponsiveBump
 				data={data}
 				xPadding={0.6}
 				colors={[delta && delta.valueChange < 0 ? '#dc2626' : '#16a34a']}
@@ -52,8 +50,8 @@ const TimeSeriesPlot: React.FC<TimeSeriesPlotProps> = ({
 				enableGridX={false}
 				enableGridY={false}
 				endLabel={false}
-				width={400}
-				height={200}
+				// width={640}
+				// height={400}
 				tooltip={() => <>{data[0].id}</>}
 			/>
 		</Box>

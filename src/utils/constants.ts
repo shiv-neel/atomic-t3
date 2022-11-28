@@ -1,3 +1,5 @@
+import { Range } from './types'
+
 export const RANGE = {
     '5d': {
         minRange: 0,

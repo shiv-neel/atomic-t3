@@ -54,7 +54,7 @@ export const dataRouter = router({
         const range = input.range > history.length ? history.length : input.range
         const data = history.slice(0, range)
 
-        let sanitizedHistory: { x: string | Date, y: number }[] = []
+        const sanitizedHistory: { x: string | Date, y: number }[] = []
         data.forEach((h: HabitHistory) => {
             const newObj = { x: h.date, y: h.stock * -1 }
             sanitizedHistory.push(newObj)
