@@ -16,11 +16,11 @@ export const userRouter = router({
             }
             return users![ 0 ]
         }),
-  getAllUserEmails: publicProcedure.query(async ({ input }) => {
+  getAllUsers: publicProcedure.query(async ({ }) => {
     const { data: users, error } = await supabase.from('User').select('*')
     if (error) {
       console.log(error.message)
-      return null
+      return []
     }
     return users
   }),

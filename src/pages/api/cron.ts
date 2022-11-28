@@ -1,11 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+import { Habit, User } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { habitRouter } from '../../server/trpc/router/habit'
+import { historyRouter } from '../../server/trpc/router/history'
+import { userRouter } from '../../server/trpc/router/user'
 import { trpc } from '../../utils/trpc'
 
-const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_KEY!
-)
 
 
 export default async function handler(
@@ -15,30 +14,35 @@ export default async function handler(
     if (req.method === 'POST') {
         try {
             const { authorization } = req.headers
+            const userCaller = userRouter.createCaller({})
+            const habitCaller = habitRouter.createCaller({})
+            const historyCaller = historyRouter.createCaller({})
 
             if (authorization === `Bearer ${process.env.ATOMIC_API_SECRET}`) {
-                const allUsers: any = trpc.user.getAllUserEmails.useQuery()
-                const userEmails: string[] = []
-                const UTCDate = new Date()
-                const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
-                const LocalDate = new Date()
-                const LocalDateTimeStamp = [ LocalDate.getHours(), LocalDate.getMinutes(), LocalDate.getFullYear() ]
+                const allUsers: User[] = await userCaller.getAllUsers()
+                if (!allUsers) return res.status(400).json({ error: 'No users found' })
+                const userEmails: string[] = allUsers.map((user: any) => user.email)
+                // const userEmails: string[] = []
+                // const UTCDate = new Date()
+                // const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
+                // const LocalDate = new Date()
+                // const LocalDateTimeStamp = [ LocalDate.getHours(), LocalDate.getMinutes(), LocalDate.getFullYear() ]
 
-                allUsers.forEach((user: any) => {
-                    if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
-                        userEmails.push(user.email)
-                    }
+                // allUsers.forEach((user: any) => {
+                //     if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
+                //         userEmails.push(user.email)
+                //     }
+                // })
+                const habits: any[] = []
+                userEmails.forEach(async (email: string) => {
+                    const userHabits = await habitCaller.getHabitsByEmail({ email })
+                    habits.push(...userHabits)
                 })
-
-                userEmails.forEach(async (email: any) => {
-                    const habits: any = trpc.habit.getHabitsByEmail.useQuery(email)
-                    habits.forEach(async (habit: any) => {
-                        const mutation = trpc.history.createHistoryAndUpdateStock.useMutation()
-                        mutation.mutate({ hid: habit.id, status: habit.status })
-                    })
+                // TODO: figure out why habits array gets cleared after forEach loop
+                res.status(200).json({ userEmails })
+                habits.forEach(async (habit: any) => {
+                    await historyCaller.createHistoryAndUpdateStock({ hid: habit.id, status: habit.status })
                 })
-
-                res.status(200).json({ success: true })
             } else {
                 res.status(401).json({ success: false })
             }
