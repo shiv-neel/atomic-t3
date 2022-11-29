@@ -2,27 +2,27 @@ import { Box } from '@chakra-ui/react'
 import { BumpDatum } from '@nivo/bump'
 import React, { useEffect, useState } from 'react'
 import { BsFillCaretDownFill, BsFillCaretUpFill } from 'react-icons/bs'
-import { RANGE } from '../../utils/constants'
+import { RANGE, Range } from '../../utils/range'
 import { trpc } from '../../utils/trpc'
-import { HidProps, Range } from '../../utils/types'
-import RangeButtons from './RangeButtons'
-import TimeSeriesPlot from './TimeSeriesPlot'
+import { HidProps } from '../../utils/types'
+import RangeButtons from '../habitpage/RangeButtons'
+import TimeSeriesPlot from '../habitpage/TimeSeriesPlot'
 
 const TimeSeriesGlobal: React.FC<HidProps> = ({ hid }) => {
 	const [hname, setHname] = useState('')
 	const [data, setData] = useState<any[]>([])
 	const [delta, setDelta] = useState<any>()
-	const [range, setRange] = useState<Range>('5d')
+	const [range, setRange] = useState<Range>('RANGE_7D')
 	const [showAxes, setShowAxes] = useState<boolean>(false)
 
 	const _data: any = trpc.data.getDataObjectOverRange.useQuery({
 		hid,
-		range: 5,
+		range: RANGE[range].range,
 	}).data!
 
 	const _delta = trpc.data.getDeltaOverRange.useQuery({
 		hid,
-		range: 1,
+		range: RANGE[range].range,
 	}).data!
 
 	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data?.name!
@@ -66,12 +66,7 @@ const TimeSeriesGlobal: React.FC<HidProps> = ({ hid }) => {
 				</Box>
 				<p className='ml-2'>{RANGE[range].string}</p>
 			</Box>
-			<TimeSeriesPlot
-				delta={delta}
-				data={data}
-				range={range}
-				showAxes={showAxes}
-			/>
+			<TimeSeriesPlot delta={delta} data={data} showAxes={showAxes} />
 			<RangeButtons
 				range={range}
 				setRange={setRange}

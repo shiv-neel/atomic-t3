@@ -23,7 +23,7 @@ const TimeSeriesPreview: React.FC<Props> = ({ hid }) => {
 					<Bump
 						data={data}
 						xPadding={0.6}
-						colors={[delta.percentChange < 0 ? '#dc2626' : '#16a34a']}
+						colors={[delta.percentChange > 0 ? '#dc2626' : '#16a34a']}
 						lineWidth={2}
 						activeLineWidth={4}
 						inactiveLineWidth={2}

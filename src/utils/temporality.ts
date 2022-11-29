@@ -1,0 +1,11 @@
+export type Temporality = 'TEMPORALITY_MORNING' | 'TEMPORALITY_DAILY' | 'TEMPORALITY_NIGHT'
+
+export const TEMPORALITY_MORNING: Temporality = 'TEMPORALITY_MORNING'
+export const TEMPORALITY_DAILY: Temporality = 'TEMPORALITY_DAILY'
+export const TEMPORALITY_NIGHT: Temporality = 'TEMPORALITY_NIGHT'
+
+export const TEMPORALITY_LABELS = {
+    TEMPORALITY_MORNING: 'Morning',
+    TEMPORALITY_DAILY: 'Daily',
+    TEMPORALITY_NIGHT: 'Nighttime',
+}

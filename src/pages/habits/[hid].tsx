@@ -9,19 +9,21 @@ import { HabitProps } from '../../utils/types'
 
 import { habitRouter } from '../../../src/server/trpc/router/habit'
 import TimeSeriesSingle from '../../components/habitpage/TimeSeriesSingle'
+import axios from 'axios'
+import { __PROD__ } from '../../utils/constants'
+import { Status, STATUS_NEUTRAL } from '../../utils/status'
 
 const HabitPage: React.FC<HabitProps> = ({ habit }) => {
-	console.log(habit)
 	const [submitted, setSubmitted] = useState<boolean>(false)
-	const [status, setStatus] = useState<'+' | '-' | 'o' | '?'>('?')
+	const [status, setStatus] = useState<Status>(STATUS_NEUTRAL)
 
 	useEffect(() => {
 		if (!habit) return
-		if (habit.status === '+' || habit.status === '-' || habit.status === 'o') {
-			setStatus(habit.status)
+		if (habit.status !== STATUS_NEUTRAL) {
+			setStatus(habit.status as Status)
 			setSubmitted(true)
 		} else {
-			setStatus('?')
+			setStatus(STATUS_NEUTRAL)
 			setSubmitted(false)
 		}
 	}, [habit])
@@ -30,7 +32,7 @@ const HabitPage: React.FC<HabitProps> = ({ habit }) => {
 		<Box className='flex w-full flex-col'>
 			<Box className='mt-6 flex justify-center gap-10'>
 				<Box className='relative' w='2xl'>
-					{/* <TimeSeriesSingle hid={habit.id} /> */}
+					<TimeSeriesSingle hid={habit.id} />
 				</Box>
 				<Box>
 					<CompleteHabitCard
@@ -54,10 +56,13 @@ export default HabitPage
 
 export async function getServerSideProps(context: any) {
 	const hid = context.query.hid
-	// TODO: move this to a next api handler
-	const habitCaller = habitRouter.createCaller({})
-	const habit = await habitCaller.getHabitByHid({ hid })
-	console.log(habit)
+	const habit = await axios
+		.get(
+			`${
+				!__PROD__ ? 'http://localhost:3000' : 'https://atomic-t3.vercel.app'
+			}/api/fetchHabit?hid=${hid}`
+		)
+		.then((res) => res.data)
 	return {
 		props: { habit },
 	}

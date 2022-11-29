@@ -4,7 +4,9 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import Chart from '../components/Chart'
 import RightHandHabitsPanel from '../components/dashboard/rhp/RightHandHabitsPanel'
-import TimeSeriesGlobal from '../components/habitpage/TimeSeriesGlobal'
+import TimeSeriesGlobal from '../components/dashboard/TimeSeriesGlobal'
+import { STATUS_FAILURE } from '../utils/status'
+import { TEMPORALITY_MORNING } from '../utils/temporality'
 import { trpc } from '../utils/trpc'
 
 const Dashboard = () => {
@@ -27,7 +29,7 @@ const Dashboard = () => {
 			reward: 'q',
 			duration: 10,
 			location: 'home',
-			type: 'morning',
+			type: TEMPORALITY_MORNING,
 			stashed: false,
 		})
 	}
@@ -38,7 +40,7 @@ const Dashboard = () => {
 	const handler2 = () => {
 		newHistoryAndUpdateHabit.mutate({
 			hid: 'a8c649ad-7465-4133-aafa-0acf002d9665',
-			status: '-',
+			status: STATUS_FAILURE,
 		})
 	}
 

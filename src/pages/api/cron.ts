@@ -42,6 +42,7 @@ export default async function handler(
 
                 for (const habit of habits) {
                     await historyCaller.createHistoryAndUpdateStock({ hid: habit.id, status: habit.status })
+                    await historyCaller.resetStatusDaily({ hid: habit.id })
                 }
 
                 res.status(200).json({ success: habits })

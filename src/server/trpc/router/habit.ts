@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from '@supabase/supabase-js'
 import { Habit } from "@prisma/client";
 import { historyRouter } from './history'
+import { STATUS_NEUTRAL } from '../../../utils/status'
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -68,7 +69,7 @@ export const habitRouter = router({
         return error
       }
       const historyCaller = historyRouter.createCaller({})
-      const result = await historyCaller.createFirstHistory({ status: 'o', hid: habit[ 0 ].id })
+      const result = await historyCaller.createFirstHistory({ status: STATUS_NEUTRAL, hid: habit[ 0 ].id })
     }),
   updateHabitMetadata: publicProcedure
     .input(

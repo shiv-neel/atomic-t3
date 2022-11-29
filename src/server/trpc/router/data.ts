@@ -44,7 +44,7 @@ export const dataRouter = router({
             start = history[ input.range ].stock
             end = history[ 0 ].stock
         }
-        const valueChange = end - start
+        const valueChange = start - end
         const percentChange = ((valueChange) / start) * 100
         return { valueChange, percentChange }
     }),
@@ -65,4 +65,5 @@ export const dataRouter = router({
             data: sanitizedHistory
         } ]
     }),
+    getNetWorthOverRange: publicProcedure.input(z.object({ email: z.string(), range: z.number() })).query(async ({ input }) => { })
 })

@@ -2,28 +2,32 @@ import { Box } from '@chakra-ui/react'
 import { BumpDatum } from '@nivo/bump'
 import React, { useEffect, useState } from 'react'
 import { BsFillCaretDownFill, BsFillCaretUpFill } from 'react-icons/bs'
-import { RANGE } from '../../utils/constants'
+import { RANGE, Range } from '../../utils/range'
 import { trpc } from '../../utils/trpc'
-import { HidProps, Range } from '../../utils/types'
+import { Delta, HidProps } from '../../utils/types'
 import RangeButtons from './RangeButtons'
 import TimeSeriesPlot from './TimeSeriesPlot'
 
 const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 	const [hname, setHname] = useState('')
 	const [data, setData] = useState<any[]>([])
-	const [delta, setDelta] = useState<any>()
-	const [range, setRange] = useState<Range>('5d')
+	const [delta, setDelta] = useState<Delta>()
+	const [stock, setStock] = useState<number>(10)
+	const [range, setRange] = useState<Range>('RANGE_7D')
 	const [showAxes, setShowAxes] = useState<boolean>(false)
 
 	const _data: any = trpc.data.getDataObjectOverRange.useQuery({
 		hid,
-		range: 5,
+		range: RANGE[range].range,
 	}).data!
 
 	const _delta = trpc.data.getDeltaOverRange.useQuery({
 		hid,
-		range: 1,
+		range: RANGE[range].range,
 	}).data!
+
+	const _stock: number = trpc.data.getCurrentStockValue.useQuery({ hid }).data
+		?.stock
 
 	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data?.name!
 
@@ -31,14 +35,16 @@ const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 		if (!_data || !_delta) return
 		setData(_data)
 		setDelta(_delta)
+		setStock(_stock)
 		setHname(_hname)
 	}, [_data, _delta])
 
-	useEffect(() => {})
+	useEffect(() => {}, [])
 
 	return (
 		<Box className='flex flex-col'>
 			<Box className='mb-3 text-3xl font-bold'>{_hname}</Box>
+			<Box className='mb-3 text-3xl font-bold'>${_stock.toFixed(2)}</Box>
 			<Box className='mb-3 flex items-center gap-1'>
 				<Box>
 					{delta && delta.valueChange && delta.valueChange < 0 ? (
@@ -66,12 +72,7 @@ const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 				</Box>
 				<p className='ml-2'>{RANGE[range].string}</p>
 			</Box>
-			<TimeSeriesPlot
-				delta={delta}
-				data={data}
-				range={range}
-				showAxes={showAxes}
-			/>
+			<TimeSeriesPlot delta={delta} data={data} showAxes={showAxes} />
 			<RangeButtons
 				range={range}
 				setRange={setRange}

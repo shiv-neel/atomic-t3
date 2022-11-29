@@ -7,14 +7,12 @@ import { Delta } from '../../utils/types'
 interface TimeSeriesPlotProps {
 	data: any[]
 	delta: Delta | undefined
-	range: '5d' | '10d' | '1m' | '3m' | '1y' | 'all'
 	showAxes: boolean
 }
 
 const TimeSeriesPlot: React.FC<TimeSeriesPlotProps> = ({
 	data,
 	delta,
-	range,
 	showAxes,
 }) => {
 	return (

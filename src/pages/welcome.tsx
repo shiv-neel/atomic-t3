@@ -6,19 +6,12 @@ import SignInPage from './signin'
 const Welcome = () => {
   const signInMutation = trpc.user.signUpUser.useMutation();
 
-  const handleSignIn = () => {
-    signInMutation.mutate({
-      email: "shiv.neel1622@gmail.com",
-      name: "Shiv Neel",
-    });
-  };
   return (
-    <Box>
-      welcome<br></br>
-      <SignInPage />
-      <Button onClick={handleSignIn}>test insert</Button>
-    </Box>
-  );
+		<Box>
+			welcome<br></br>
+			<SignInPage />
+		</Box>
+	)
 };
 
 export default Welcome;

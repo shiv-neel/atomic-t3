@@ -11,14 +11,16 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react'
 import { BsPlusLg } from 'react-icons/bs'
+import { Temporality, TEMPORALITY_LABELS } from '../../../utils/temporality'
 import NewHabitForm from '../../habits_panel_view/NewHabitForm'
+import NewHabitActionWrapper from './NewHabitActionWrapper'
 
 interface TitleProps {
-	text: string
+	temporality: Temporality
 	icon: any
 }
 
-const Title: React.FC<TitleProps> = ({ text, icon }) => {
+const Title: React.FC<TitleProps> = ({ temporality, icon }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	return (
 		<Box className='flex w-full flex-col'>
@@ -28,21 +30,13 @@ const Title: React.FC<TitleProps> = ({ text, icon }) => {
 					textColor={'messenger.500'}
 				>
 					{icon}
-					<p>{text}</p>
+					<p>{TEMPORALITY_LABELS[temporality]} Habit Stack</p>
 				</Box>
-				<Button size='sm' variant='ghost' onClick={onOpen}>
-					<BsPlusLg size='1rem' />
-				</Button>
-				<Modal isOpen={isOpen} onClose={onClose}>
-					<ModalOverlay />
-					<ModalContent>
-						<ModalHeader>Add to {text}</ModalHeader>
-						<ModalCloseButton />
-						<ModalBody>
-							<NewHabitForm text={text} onClose={onClose} />
-						</ModalBody>
-					</ModalContent>
-				</Modal>
+				<NewHabitActionWrapper temporality={temporality}>
+					<Button size='sm' variant='ghost' onClick={onOpen}>
+						<BsPlusLg size='1rem' />
+					</Button>
+				</NewHabitActionWrapper>
 			</Box>
 			<Divider my={4} />
 		</Box>

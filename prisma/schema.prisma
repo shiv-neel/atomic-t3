@@ -68,9 +68,10 @@ model Habit {
   response  String
   reward    String
   createdAt DateTime       @default(now())
-  status    String         @default("?")
-  type      String
+  status    String         @default("STATUS_NEUTRAL")
+  temporality      String
   stashed   Boolean        @default(false)
+  good      Boolean        @default(true) // creating good habit (T) vs breaking bad habit (F)
   duration  Int
   location  String         @default("Anywhere")
 }

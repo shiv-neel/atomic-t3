@@ -13,4 +13,3 @@ export interface HabitProps {
     habit: Habit
 }
 
-export type Range = '5d' | '10d' | '1m' | '3m' | '1y' | 'all'

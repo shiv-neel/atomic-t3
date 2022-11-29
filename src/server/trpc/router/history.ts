@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 import { HabitHistory } from '@prisma/client'
 import { trpc } from '../../../utils/trpc'
 import { dataRouter } from './data'
+import { STATUS_SUCCESS, STATUS_FAILURE, STATUS_NEUTRAL, STATUS_NULL } from '../../../utils/status'
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -37,7 +38,7 @@ export const historyRouter = router({
       /* creating and inserting today's history node */
       const { data: _, error: historyInsertError } = await supabase.from('HabitHistory').insert({
         habitId: input.hid,
-        status: input.status || 'o',
+        status: input.status || STATUS_NEUTRAL,
         stock: input.stock || 10
       })
     }),
@@ -56,17 +57,17 @@ export const historyRouter = router({
 
     const lastStock = await dataCaller.getCurrentStockValue({ hid: input.hid })
     let newStock = lastStock.stock
-    if (input.status === '+') {
+    if (input.status === STATUS_SUCCESS) {
       newStock *= 1.01
     }
-    else if (input.status === '-' || input.status === '?') {
+    else if (input.status === STATUS_FAILURE || input.status === STATUS_NULL) {
       newStock *= 0.99
     }
 
     await historyCaller.createNewHistory({ hid: input.hid, stock: newStock, status: input.status })
-    await supabase.from('Habit').update({ stock: newStock, status: '?' }).match({ id: input.hid })
+    await supabase.from('Habit').update({ stock: newStock, status: input.status }).match({ id: input.hid })
   }),
   resetStatusDaily: publicProcedure.input(z.object({ hid: z.string() })).mutation(async ({ input }) => {
-    await supabase.from('Habit').update({ status: '?' }).match({ id: input.hid })
+    await supabase.from('Habit').update({ status: STATUS_NULL }).match({ id: input.hid })
   })
 })

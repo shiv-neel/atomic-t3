@@ -6,6 +6,7 @@ import { Habit } from '@prisma/client'
 import { trpc } from '../../../utils/trpc'
 import TimeSeriesPreview from './TimeSeriesPreview'
 import { HabitProps } from '../../../utils/types'
+import { STATUS_LABELS, STATUS_NULL } from '../../../utils/status'
 
 const HabitSummaryCard: React.FC<HabitProps> = ({ habit }) => {
 	const [percentChange, setPercentChange] = useState<number>(0)
@@ -26,7 +27,7 @@ const HabitSummaryCard: React.FC<HabitProps> = ({ habit }) => {
 	}, [_stock, _percentChange])
 
 	useEffect(() => {
-		setStatus(habit.status !== '?')
+		setStatus(habit.status !== STATUS_NULL)
 	}, [habit.status])
 
 	return (
@@ -36,7 +37,7 @@ const HabitSummaryCard: React.FC<HabitProps> = ({ habit }) => {
 					<Box className='flex flex-col'>
 						<p className='hover:underline'>{habit.name}</p>
 						<Box className='flex gap-2'>
-							{habit.status === '?' ? (
+							{habit.status === STATUS_NULL ? (
 								<p className='font-semibold text-red-500'>Not Submitted</p>
 							) : (
 								<p className='font-semibold text-blue-500'>Submitted!</p>
@@ -48,7 +49,7 @@ const HabitSummaryCard: React.FC<HabitProps> = ({ habit }) => {
 							{stock ? stock.toFixed(2) : (0.0).toFixed(2)}
 						</p>
 						<p className='ml-auto flex items-center gap-2'>
-							{percentChange > 0 ? '+' : ''}
+							{percentChange > 0 ? STATUS_LABELS.STATUS_SUCCESS : ''}
 							{percentChange.toFixed(2)}%
 						</p>
 					</Box>

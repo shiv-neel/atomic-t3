@@ -31,13 +31,22 @@ import { IconType } from 'react-icons'
 import { trpc } from '../../utils/trpc'
 import { historyRouter } from '../../server/trpc/router/history'
 import { Habit } from '@prisma/client'
+import axios from 'axios'
+import { __PROD__ } from '../../utils/constants'
+import {
+	Status,
+	STATUS_FAILURE,
+	STATUS_NEUTRAL,
+	STATUS_NULL,
+	STATUS_SUCCESS,
+} from '../../utils/status'
 
 interface CompleteHabitCardProps {
 	habit: Habit
 	submitted: boolean
-	status: '+' | '-' | 'o' | '?'
+	status: Status
 	setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
-	setStatus: React.Dispatch<React.SetStateAction<'+' | '-' | 'o' | '?'>>
+	setStatus: React.Dispatch<React.SetStateAction<Status>>
 }
 
 const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
@@ -54,28 +63,38 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	const statusToIconMap = {
-		'+': <BsPlusCircle size='20' />,
-		'-': <BsDashCircle size='20' />,
-		o: <BsCircle size='20' />,
+		STATUS_NEUTRAL: <BsPlusCircle size='20' />,
+		STATUS_FAILURE: <BsDashCircle size='20' />,
+		STATUS_SUCCESS: <BsCircle size='20' />,
 	} as { [key in string]: JSX.Element }
 
 	useEffect(() => {
 		// set status and submitted properties upon mount
 		if (!habit) return
-		if (habit.status === '+' || habit.status === '-' || habit.status === 'o') {
+		if (
+			habit.status === STATUS_SUCCESS ||
+			habit.status === STATUS_FAILURE ||
+			habit.status === STATUS_NEUTRAL
+		) {
 			setStatus(habit.status)
 			setSubmitted(true)
 		} else {
-			setStatus('?')
+			setStatus(STATUS_NULL)
 			setSubmitted(false)
 		}
 	}, [habit])
 
+	const createHistoryAndUpdateStock =
+		trpc.history.createHistoryAndUpdateStock.useMutation()
+
 	const updateStatus = async () => {
-		if (status === '?' || submitted) return
+		if (status === STATUS_NULL || submitted) return
 		setLoading(true)
-		const historyCaller = historyRouter.createCaller({})
-		const history = await historyCaller.createHistoryAndUpdateStock({hid: habit.id, status})
+		console.log(status)
+		createHistoryAndUpdateStock.mutate({
+			hid: habit.id,
+			status,
+		})
 		setSubmitted(true)
 		setLoading(false)
 		onClose()
@@ -121,36 +140,36 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 					<Button
 						isDisabled={submitted}
 						variant='unstyled'
-						color={status === '+' ? 'messenger.500' : ''}
+						color={status === STATUS_SUCCESS ? 'messenger.500' : ''}
 						rounded={100}
 						className={`cursor-pointer hover:scale-110 ${
-							status === '+' ? 'shadow-xl' : 'shadow-sm'
+							status === STATUS_SUCCESS ? 'shadow-xl' : 'shadow-sm'
 						}`}
-						onClick={() => setStatus('+')}
+						onClick={() => setStatus(STATUS_SUCCESS)}
 					>
 						<BsPlusCircle size='40' />
 					</Button>
 					<Button
 						isDisabled={submitted}
 						variant='unstyled'
-						color={status === '-' ? 'messenger.500' : ''}
+						color={status === STATUS_FAILURE ? 'messenger.500' : ''}
 						rounded={100}
 						className={`cursor-pointer hover:scale-110 ${
-							status === '-' ? 'shadow-xl' : 'shadow-sm'
+							status === STATUS_FAILURE ? 'shadow-xl' : 'shadow-sm'
 						}`}
-						onClick={() => setStatus('-')}
+						onClick={() => setStatus(STATUS_FAILURE)}
 					>
 						<BsDashCircle size='40' />
 					</Button>
 					<Button
 						isDisabled={submitted}
 						variant='unstyled'
-						color={status === 'o' ? 'messenger.500' : ''}
+						color={status === STATUS_NEUTRAL ? 'messenger.500' : ''}
 						rounded={100}
 						className={`cursor-pointer hover:scale-110 ${
-							status === 'o' ? 'shadow-xl' : 'shadow-sm'
+							status === STATUS_NEUTRAL ? 'shadow-xl' : 'shadow-sm'
 						}`}
-						onClick={() => setStatus('o')}
+						onClick={() => setStatus(STATUS_NEUTRAL)}
 					>
 						<BsCircle size='40' />
 					</Button>
@@ -159,7 +178,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 					<Button
 						className='mt-4 flex gap-2'
 						onClick={onOpen}
-						isDisabled={submitted}
+						isDisabled={submitted || status === STATUS_NULL}
 						colorScheme='messenger'
 					>
 						{submitted ? (
@@ -185,7 +204,7 @@ const CompleteHabitCard: React.FC<CompleteHabitCardProps> = ({
 							{statusToIconMap[status]}?
 						</Box>
 						<Box>
-							{status === 'o' ? (
+							{status === STATUS_NEUTRAL ? (
 								<Box className='space-y-2'>
 									<p className='text-sm font-bold text-red-500'>
 										Please note that this status should ONLY be submitted in
