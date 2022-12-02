@@ -23,13 +23,10 @@ export default async function handler(
                 const localUserEmails: string[] = []
 
                 const UTCDate = new Date()
-                const UTCTimestamp = [ UTCDate.getUTCHours(), UTCDate.getUTCMinutes(), UTCDate.getUTCFullYear() ]
-
-                const LocalDate = new Date()
-                const LocalDateTimeStamp = [ LocalDate.getHours(), LocalDate.getMinutes(), LocalDate.getFullYear() ]
 
                 for (const user of allUsers) {
-                    if (LocalDateTimeStamp[ 0 ]! - UTCTimestamp[ 0 ]! === user.UTCOffset) {
+                    const UTCOffset = user.UTCOffset
+                    if (UTCDate.getHours() === -UTCOffset && UTCDate.getMinutes() === 0) {
                         localUserEmails.push(user.email)
                     }
                 }
@@ -41,6 +38,7 @@ export default async function handler(
                 }
 
                 for (const habit of habits) {
+                    console.log(habit)
                     await historyCaller.createHistoryAndUpdateStock({ hid: habit.id, status: habit.status })
                     await historyCaller.resetStatusDaily({ hid: habit.id })
                 }
