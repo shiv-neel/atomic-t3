@@ -61,7 +61,7 @@ model Habit {
   User      User           @relation(fields: [userEmail], references: [email])
   userEmail String
   name      String         @db.VarChar(60)
-  identity String
+  identity String @default("")
   stock     Float          @default(10)
   History   HabitHistory[]
   cue       String
@@ -70,7 +70,7 @@ model Habit {
   reward    String
   createdAt DateTime       @default(now())
   status    String         @default("STATUS_NEUTRAL")
-  temporality      String
+  temporality      String @default("TEMPORALITY_DAILY")
   stashed   Boolean        @default(false)
   good      Boolean        @default(true) // creating good habit (T) vs breaking bad habit (F)
   duration  Int

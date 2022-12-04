@@ -6,6 +6,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { theme } from '../styles/theme'
 import { SessionProvider } from 'next-auth/react'
+import { Provider } from 'react-redux'
+import store from '../redux/store'
 
 const MyApp: AppType = ({
 	Component,
@@ -14,9 +16,11 @@ const MyApp: AppType = ({
 	return (
 		<ChakraProvider theme={theme}>
 			<SessionProvider session={session}>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
+				<Provider store={store}>
+					<Layout>
+						<Component {...pageProps} />
+					</Layout>
+				</Provider>
 			</SessionProvider>
 		</ChakraProvider>
 	)

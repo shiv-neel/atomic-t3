@@ -1,49 +1,66 @@
-import { Box, Divider, Heading, Input } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import TextArea from '../components/form/TextArea'
-import TextInput from '../components/form/TextInput'
+import { Box, Button, Divider, Heading, Input } from '@chakra-ui/react'
+import Router from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { BsArrowLeft, BsArrowRight, BsPlus } from 'react-icons/bs'
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
+import { VscPreview } from 'react-icons/vsc'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import HabitCycle from '../components/form/HabitCycle'
+import HabitDefinition from '../components/form/HabitDefinition'
+import HabitLogistics from '../components/form/HabitLogistics'
+import NavBtns from '../components/form/NavBtns'
+import ReviewForm from '../components/form/ReviewForm'
+
+import { setTemporality } from '../features/formSlice'
 import { Temporality, TEMPORALITY_LABELS } from '../utils/temporality'
 
 interface Props {
 	temporality: Temporality
 }
 const NewHabitForm: React.FC<Props> = ({ temporality }) => {
-	const [name, setName] = useState<string>('')
-	const [identity, setIdentity] = useState<string>('')
+	const selector = useSelector((state: any) => state.formValues)
+	const dispatch = useDispatch()
+	useEffect(() => {
+		if (typeof window !== undefined && !TEMPORALITY_LABELS[temporality]) {
+			Router.push('/dashboard')
+		}
+		dispatch(setTemporality(temporality))
+	}, [])
+
+	const [pageIndex, setPageIndex] = useState<number>(0)
+
+	const pages = [
+		<HabitDefinition />,
+		<HabitCycle />,
+		<HabitLogistics />,
+		<ReviewForm />,
+	]
+
+	const submitHabit = () => {
+		// TODO: submit backend logic
+		Router.push('/dashboard')
+	}
 
 	return (
 		<Box className='mx-16 flex flex-col lg:mx-24 xl:mx-48'>
-			<Heading className='mt-16 mb-8'>
+			<Button onClick={() => console.log(selector)}>Log Form State</Button>
+			<Heading className='mt-16 mb-8' fontFamily={'heading'}>
 				Create New {TEMPORALITY_LABELS[temporality]} Habit
 			</Heading>
 			<Divider />
-			<Box className='flex p-12'>
-				<Box className='flex w-full flex-col'>
-					<p className='px-6 text-xl font-bold'>Habit Definition</p>
-					<Box className='flex'>
-						<TextInput
-							label='Habit Name'
-							value={name}
-							setValue={setName}
-							placeholder={'Go to bed by 11:30 PM.'}
-						/>
-						<TextInput
-							label='New Identity'
-							value={identity}
-							setValue={setIdentity}
-							placeholder={'I am a person who values my physical health.'}
-						/>
-					</Box>
-					<Box className='flex'>
-						<p className='px-6 text-xl font-bold'>Habit Cycle</p>
-						{/* put cue craving reward response component here */}
-						<TextArea />
-					</Box>
-					<Box className='flex'>
-						<TextInput label='Habit Name' value={name} setValue={setName} />
-						<TextInput label='Habit Name' value={name} setValue={setName} />
-					</Box>
-				</Box>
+			<Box className='flex flex-col p-12'>
+				<NavBtns
+					pageIndex={pageIndex}
+					setPageIndex={setPageIndex}
+					numPages={pages.length}
+				/>
+				{pages[pageIndex]}
+				<NavBtns
+					pageIndex={pageIndex}
+					setPageIndex={setPageIndex}
+					numPages={pages.length}
+				/>
 			</Box>
 		</Box>
 	)

@@ -11,6 +11,7 @@ import React from 'react'
 import { AiOutlineCalendar } from 'react-icons/ai'
 import { BsCloudSun, BsPlusLg } from 'react-icons/bs'
 import { IoCloudyNightOutline } from 'react-icons/io5'
+import { DARK_PAPER_BG, LIGHT_PAPER_BG } from '../../../utils/constants'
 import {
 	TEMPORALITY_DAILY,
 	TEMPORALITY_MORNING,
@@ -30,7 +31,7 @@ const RightHandHabitsPanel = () => {
 	}).data!
 
 	const { colorMode } = useColorMode()
-	const bgc = colorMode === 'light' ? 'bg-gray-50' : 'bg-gray-900'
+	const bgc = colorMode === 'light' ? LIGHT_PAPER_BG : DARK_PAPER_BG
 
 	return (
 		<Box

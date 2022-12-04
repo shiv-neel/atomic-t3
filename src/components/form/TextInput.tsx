@@ -1,27 +1,34 @@
 import { Box, Button, Input } from '@chakra-ui/react'
-import React from 'react'
 import { BsQuestionCircleFill } from 'react-icons/bs'
+import { useDispatch } from 'react-redux'
 
-interface Props {
+export interface FormInputProps {
 	label: string
 	value: string
-	setValue: (value: string) => void
+	action: (e: string) => any
 	placeholder?: string
+	description?: string
 }
 
-const TextInput: React.FC<Props> = ({ label, value, setValue }) => {
+const TextInput: React.FC<FormInputProps> = ({
+	label,
+	value,
+	action,
+	placeholder,
+	description,
+}) => {
+	const dispatch = useDispatch()
 	return (
 		<Box className='flex w-full flex-col p-6'>
-			<Box className='text-italic my-2 flex items-center gap-3 text-sm italic text-gray-600'>
+			<Box className='text-italic text-md my-2 flex items-center gap-3'>
 				{label}
-				<Button variant='unstyled' className='hover:text-blue-500'>
-					<BsQuestionCircleFill />
-				</Button>
 			</Box>
+			<Box className='mb-3 text-sm italic text-gray-500'>{description}</Box>
 			<Input
-				variant='filled'
-				onChange={(e) => setValue(e.target.value)}
+				variant='outline'
+				onChange={(e) => dispatch(action(e.target.value))}
 				value={value}
+				placeholder={placeholder}
 			/>
 		</Box>
 	)
