@@ -42,11 +42,12 @@ export const historyRouter = router({
         stock: input.stock || 10
       })
     }),
-  createNewHistory: publicProcedure.input(z.object({ hid: z.string(), stock: z.number().nullish(), status: z.string().nullish() })).mutation(async ({ input }) => {
+  createNewHistory: publicProcedure.input(z.object({ hid: z.string(), stock: z.number().nullish(), status: z.string().nullish(), date: z.date().nullish() })).mutation(async ({ input }) => {
     const newHistory = {
       habitId: input.hid,
-      stock: input.stock,
-      status: input.status
+      stock: input.stock || 10,
+      status: input.status || STATUS_NEUTRAL,
+      date: input.date || new Date()
     }
     const { data: _, error } = await supabase.from('HabitHistory').insert(newHistory)
     if (error) console.log(error)

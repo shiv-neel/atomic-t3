@@ -19,7 +19,7 @@ const TimeSeriesPreview: React.FC<Props> = ({ hid }) => {
 	return (
 		<Box>
 			<Box h={'100px'} className='flex justify-center'>
-				{data && (
+				{data && delta && (
 					<Bump
 						data={data}
 						xPadding={0.6}

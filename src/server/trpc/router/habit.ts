@@ -58,9 +58,7 @@ export const habitRouter = router({
       const { data: duplicateHabit, error: duplicateHabitError } = await supabase.from('Habit').select('*').match({ 'userEmail': input.userEmail, 'name': input.name })
       if (duplicateHabit && duplicateHabit.length) {
         const error = { status: 400, message: 'Duplicated Habit' }
-        console.log(duplicateHabit)
-        console.log(error)
-        return
+        return error
       }
       const { data: habit, error } = await supabase
         .from('Habit')

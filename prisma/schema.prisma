@@ -61,6 +61,7 @@ model Habit {
   User      User           @relation(fields: [userEmail], references: [email])
   userEmail String
   name      String         @db.VarChar(60)
+  identity String
   stock     Float          @default(10)
   History   HabitHistory[]
   cue       String

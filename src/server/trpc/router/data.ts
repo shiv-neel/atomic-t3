@@ -65,5 +65,16 @@ export const dataRouter = router({
             data: sanitizedHistory
         } ]
     }),
-    getNetWorthOverRange: publicProcedure.input(z.object({ email: z.string(), range: z.number() })).query(async ({ input }) => { })
+    /*
+    populate aggregated history arr with largest ranging stock, going most recent to oldest (we'll reverse it later)
+    then, for all remaining stocks, add them to the values in the array
+    */
+    getAggregatedHistory: publicProcedure.input(z.object({ email: z.string() })).query(async ({ input }) => {
+        const historyCaller = historyRouter.createCaller({})
+        const habits: Habit[] = trpc.habit.getHabitsByEmail.useQuery({ email: input.email }).data!
+        if (!habits) return []
+        const aggregatedHistory = []
+        habits.sort((a: Habit, b: Habit) => Number(a.createdAt) - Number(b.createdAt))
+        return habits
+    })
 })
