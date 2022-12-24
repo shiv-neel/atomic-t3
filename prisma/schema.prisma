@@ -46,13 +46,14 @@ model VerificationToken {
 
 model User {
   email     String    @id
+  password String    @db.VarChar(22)
   name      String    @db.VarChar(60)
+  avatar   String?   @db.VarChar(60)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
   Account   Account[]
   Session   Session[]
   Habit     Habit[]
-  provider  String    @default("github")
   UTCOffset Int @default(-6)
 }
 

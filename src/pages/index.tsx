@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import SignIn from './signin'
+import SignIn from './auth/signin'
 
 const Home: NextPage = () => {
 	const { data: session } = useSession()

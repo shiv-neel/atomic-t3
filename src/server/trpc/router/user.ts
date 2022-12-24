@@ -6,7 +6,7 @@ const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KE
 
 export const userRouter = router({
   /* QUERIES */
-    getUserById: publicProcedure
+  getUserByEmail: publicProcedure
         .input(z.object({ email: z.string() }))
         .query(async ({ input }) => {
             const { data: users, error } = await supabase.from('User').select('*').eq('email', input.email)

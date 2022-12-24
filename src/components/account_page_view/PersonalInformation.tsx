@@ -1,21 +1,21 @@
-import { Box, Button, useColorMode } from "@chakra-ui/react";
-import { User } from "@supabase/supabase-js";
-import Router from "next/router";
-import React from "react";
+import { Box, Button, useColorMode } from '@chakra-ui/react'
+import { User } from '@prisma/client'
+import Router from 'next/router'
+import React from 'react'
 import { VscSignOut } from 'react-icons/vsc'
-import DataRow from "./DataRow";
+import DataRow from './DataRow'
 
 interface PersonalInformationProps {
-  user: User | null;
-  fname: string;
-  lname: string;
+	user:
+		| {
+				name?: string | null | undefined
+				email?: string | null | undefined
+				image?: string | null | undefined
+		  }
+		| undefined
 }
 
-const PersonalInformation: React.FC<PersonalInformationProps> = ({
-	user,
-	fname,
-	lname,
-}) => {
+const PersonalInformation: React.FC<PersonalInformationProps> = ({ user }) => {
 	const handleSignOut = async () => {
 		// await signOut();
 		Router.push('/signin')
@@ -26,8 +26,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 		<Box>
 			<p className='mb-8 text-2xl font-bold'>Personal Information</p>
 			<Box className='mt-12 flex flex-col gap-5'>
-				<DataRow key_='First Name' value={fname} />
-				<DataRow key_='Last Name' value={lname} />
+				<DataRow key_='First Name' value={user?.name!} />
+				<DataRow key_='Last Name' value={user?.name!} />
 				<DataRow key_='Email' value={user?.email || ''} />
 				<DataRow key_='Password' value={''} />
 			</Box>
@@ -44,4 +44,4 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 	)
 }
 
-export default PersonalInformation;
+export default PersonalInformation
