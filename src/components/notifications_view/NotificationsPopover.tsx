@@ -1,10 +1,9 @@
 import { Box, Divider } from '@chakra-ui/react'
 import React from 'react'
-import { Notification } from '../../models/Notification'
 import NotificationCard from './NotificationCard'
 
 interface NotificationsPopoverProps {
-	notifications: Notification[]
+	notifications: any[]
 }
 
 const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({

@@ -1,10 +1,10 @@
 import { Box, Divider } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
-import { Notification } from '../../models/Notification'
 
 interface NotificationCardProps {
-	notification: Notification
+	notification: any
+	// TODO: Add type for notification
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({

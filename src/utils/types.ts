@@ -13,3 +13,10 @@ export interface HabitProps {
     habit: Habit
 }
 
+export interface HabitDatumProps {
+    id: string
+    data: {
+        x: string | Date
+        y: number
+    }[]
+}

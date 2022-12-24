@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { BsGithub } from 'react-icons/bs'
 import { trpc } from '../utils/trpc'
 
-const SignInPage = () => {
+const SignIn = () => {
 	const { data: session } = useSession()
 	const user = session?.user
 	const router = useRouter()
@@ -50,4 +50,4 @@ const SignInPage = () => {
 	)
 }
 
-export default SignInPage
+export default SignIn

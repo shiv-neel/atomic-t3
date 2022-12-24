@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/react'
 import { Bump, ResponsiveBump } from '@nivo/bump'
-import { Line, ResponsiveLine } from '@nivo/line'
 import React from 'react'
 import { Delta } from '../../utils/types'
 

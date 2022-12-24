@@ -1,15 +1,15 @@
 import { Box, Button } from '@chakra-ui/react'
+import { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import Chart from '../components/Chart'
 import RightHandHabitsPanel from '../components/dashboard/rhp/RightHandHabitsPanel'
 import TimeSeriesGlobal from '../components/dashboard/TimeSeriesGlobal'
 import { STATUS_FAILURE } from '../utils/status'
 import { TEMPORALITY_MORNING } from '../utils/temporality'
 import { trpc } from '../utils/trpc'
 
-const Dashboard = () => {
+const Dashboard: NextPage = () => {
 	const { data: session } = useSession()
 	const router = useRouter()
 	useEffect(() => {
@@ -20,18 +20,7 @@ const Dashboard = () => {
 
 	const newHabitAndFirstHistory = trpc.habit.createHabit.useMutation()
 	const handler = () => {
-		newHabitAndFirstHistory.mutate({
-			userEmail: 'shiv.neel@gmail.com',
-			name: 'diff habit 2',
-			cue: 'Time is 8pm',
-			craving: 'f',
-			response: 'b',
-			reward: 'q',
-			duration: 10,
-			location: 'home',
-			type: TEMPORALITY_MORNING,
-			stashed: false,
-		})
+		console.log('handler')
 	}
 
 	const newHistoryAndUpdateHabit =

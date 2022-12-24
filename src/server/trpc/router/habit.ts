@@ -21,7 +21,7 @@ export const habitRouter = router({
         .eq("id", input.hid);
       if (error) {
         console.log(error.message);
-        return error;
+        return null;
       }
       return habits![0];
     }),

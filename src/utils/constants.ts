@@ -5,3 +5,5 @@ export const LIGHT_PAPER_BG = 'bg-gray-50'
 
 export const DARK_PAPER_TEXT = 'text-gray-900'
 export const LIGHT_PAPER_TEXT = 'text-gray-50'
+
+export const DEFAULT_STOCK = 10

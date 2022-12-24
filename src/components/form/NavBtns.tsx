@@ -17,7 +17,9 @@ const NavBtns: React.FC<NavBtnsProps> = ({
 	setPageIndex,
 	numPages,
 }) => {
-	const submitHabit = () => {}
+	const submitHabit = () => {
+		console.log('')
+	}
 	return (
 		<Box className='ml-auto flex gap-6'>
 			<Button

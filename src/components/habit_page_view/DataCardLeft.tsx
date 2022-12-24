@@ -1,32 +1,30 @@
 import { Box } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { Habit } from '../../models/Habit'
-import { getStartDate, getTodaysStonk } from '../../utils/habit_resolver'
 import { HabitInfoProps } from './HabitInfo'
 
 const DataCardLeft: React.FC<HabitInfoProps> = ({ habit, submitted }) => {
 	const [stonk, setStonk] = useState<number>()
 	const [startDate, setStartDate] = useState<string>('')
 
-	useEffect(() => {
-		const getStonkLocal = async () => {
-			if (!habit || !habit.hid) return
-			const todaysStonk = await getTodaysStonk(habit!.hid!)
-			setStonk(todaysStonk)
-		}
+	// useEffect(() => {
+	// 	const getStonkLocal = async () => {
+	// 		if (!habit || !habit.hid) return
+	// 		const todaysStonk = await getTodaysStonk(habit!.hid!)
+	// 		setStonk(todaysStonk)
+	// 	}
 
-		const getDateLocal = async () => {
-			if (!habit || !habit.hid) return
-			const date = await getStartDate(habit!.hid!)
-			setStartDate(new Date(date).toLocaleDateString())
-		}
-		getStonkLocal()
-		getDateLocal()
-	}, [habit, submitted])
+	// 	const getDateLocal = async () => {
+	// 		if (!habit || !habit.hid) return
+	// 		const date = await getStartDate(habit!.hid!)
+	// 		setStartDate(new Date(date).toLocaleDateString())
+	// 	}
+	// 	getStonkLocal()
+	// 	getDateLocal()
+	// }, [habit, submitted])
 
 	return (
 		<Box className='w-72'>
-			<Box className='p-5 rounded-md' borderWidth={'1px'}>
+			<Box className='rounded-md p-5' borderWidth={'1px'}>
 				<Box className='text-sm'>Your market value</Box>
 				<Box className='text-lg'>${stonk?.toFixed(2)}</Box>
 				<Box className='text-sm'>Start Date</Box>

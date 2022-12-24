@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react'
 import { BsPlusLg } from 'react-icons/bs'
 import { Temporality, TEMPORALITY_LABELS } from '../../../utils/temporality'
-import NewHabitForm from '../../habits_panel_view/NewHabitForm'
 import NewHabitActionWrapper from './NewHabitActionWrapper'
 
 interface TitleProps {

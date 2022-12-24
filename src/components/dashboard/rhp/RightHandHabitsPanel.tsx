@@ -26,9 +26,10 @@ import Title from './Title'
 const RightHandHabitsPanel = () => {
 	const { data: session } = useSession()
 
-	const habits: Habit[] = trpc.habit.getHabitsByEmail.useQuery({
-		email: session?.user!.email!,
-	}).data!
+	const habits: Habit[] =
+		trpc.habit.getHabitsByEmail.useQuery({
+			email: session?.user?.email ? session.user.email : '',
+		})?.data || []
 
 	const { colorMode } = useColorMode()
 	const bgc = colorMode === 'light' ? LIGHT_PAPER_BG : DARK_PAPER_BG

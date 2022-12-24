@@ -18,6 +18,7 @@ import { Temporality, TEMPORALITY_LABELS } from '../utils/temporality'
 interface Props {
 	temporality: Temporality
 }
+
 const NewHabitForm: React.FC<Props> = ({ temporality }) => {
 	const selector = useSelector((state: any) => state.formValues)
 	const dispatch = useDispatch()
@@ -26,15 +27,15 @@ const NewHabitForm: React.FC<Props> = ({ temporality }) => {
 			Router.push('/dashboard')
 		}
 		dispatch(setTemporality(temporality))
-	}, [])
+	}, [temporality])
 
 	const [pageIndex, setPageIndex] = useState<number>(0)
 
 	const pages = [
-		<HabitDefinition />,
-		<HabitCycle />,
-		<HabitLogistics />,
-		<ReviewForm />,
+		<HabitDefinition key={0} />,
+		<HabitCycle key={1} />,
+		<HabitLogistics key={2} />,
+		<ReviewForm key={3} />,
 	]
 
 	const submitHabit = () => {

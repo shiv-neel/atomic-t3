@@ -29,7 +29,7 @@ const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 	const _stock: number = trpc.data.getCurrentStockValue.useQuery({ hid }).data
 		?.stock
 
-	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data?.name!
+	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data!.name!
 
 	useEffect(() => {
 		if (!_data || !_delta) return
@@ -38,8 +38,6 @@ const TimeSeriesSingle: React.FC<HidProps> = ({ hid }) => {
 		setStock(_stock)
 		setHname(_hname)
 	}, [_data, _delta])
-
-	useEffect(() => {}, [])
 
 	return (
 		<Box className='flex flex-col'>

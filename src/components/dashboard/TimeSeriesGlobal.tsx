@@ -4,41 +4,41 @@ import React, { useEffect, useState } from 'react'
 import { BsFillCaretDownFill, BsFillCaretUpFill } from 'react-icons/bs'
 import { RANGE, Range } from '../../utils/range'
 import { trpc } from '../../utils/trpc'
-import { HidProps } from '../../utils/types'
+import { Delta, HabitDatumProps, HidProps } from '../../utils/types'
 import RangeButtons from '../habitpage/RangeButtons'
 import TimeSeriesPlot from '../habitpage/TimeSeriesPlot'
+import { RANGE_7D } from '../../utils/range'
+import { Habit } from '@prisma/client'
 
 const TimeSeriesGlobal: React.FC<HidProps> = ({ hid }) => {
 	const [hname, setHname] = useState('')
 	const [data, setData] = useState<any[]>([])
-	const [delta, setDelta] = useState<any>()
-	const [range, setRange] = useState<Range>('RANGE_7D')
+	const [delta, setDelta] = useState<Delta>()
+	const [range, setRange] = useState<Range>(RANGE_7D)
 	const [showAxes, setShowAxes] = useState<boolean>(false)
 
-	const _data: any = trpc.data.getDataObjectOverRange.useQuery({
+	const _data: HabitDatumProps[] = trpc.data.getDataObjectOverRange.useQuery({
 		hid,
 		range: RANGE[range].range,
 	}).data!
 
-	const _delta = trpc.data.getDeltaOverRange.useQuery({
+	const _delta: Delta = trpc.data.getDeltaOverRange.useQuery({
 		hid,
 		range: RANGE[range].range,
 	}).data!
 
-	const _hname = trpc.habit.getHabitByHid.useQuery({ hid }).data?.name!
+	const _habit: Habit = trpc.habit.getHabitByHid.useQuery({ hid }).data!
 
 	useEffect(() => {
-		if (!_data || !_delta) return
+		if (!_data || !_delta || !_habit) return
 		setData(_data)
 		setDelta(_delta)
-		setHname(_hname)
-	}, [_data, _delta])
-
-	useEffect(() => {})
+		setHname(_habit.name)
+	}, [_data, _delta, _habit])
 
 	return (
 		<Box className='flex flex-col'>
-			<Box className='mb-3 text-3xl font-bold'>{_hname}</Box>
+			<Box className='mb-3 text-3xl font-bold'>{hname}</Box>
 			<Box className='mb-3 flex items-center gap-1'>
 				<Box>
 					{delta && delta.valueChange && delta.valueChange < 0 ? (
