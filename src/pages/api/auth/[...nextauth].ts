@@ -2,7 +2,7 @@ import { User } from '@prisma/client'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { trpc } from '../../../utils/trpc'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 
 type UserCredentials = {
   email: string
@@ -22,8 +22,7 @@ export default NextAuth({
         const user: User = trpc.user.getUserByEmail.useQuery({ email }).data
         if (!user) return null
 
-        const hash = await bcrypt.hash(password, 10)
-        const doPasswordsMatch = await bcrypt.compare(user.password, hash)
+        const doPasswordsMatch = trpc.user.comparePasswords.useQuery({ password, hashedPassword: user.password }).data
         if (doPasswordsMatch)
           return { id: user.email, name: user.name }
         return null

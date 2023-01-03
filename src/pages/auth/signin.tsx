@@ -3,16 +3,15 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { BsGithub } from 'react-icons/bs'
 import { InputField } from '../../components/form/InputField'
 import { trpc } from '../../utils/trpc'
+import { AES } from 'crypto-js'
 
 const SignIn = () => {
 	const { data: session } = useSession()
 	const user = session?.user
 	const router = useRouter()
 	const lastLoginUpdateMutation = trpc.user.updateLastLogin.useMutation()
-	const firstLoginMutation = trpc.user.signUpUser.useMutation()
 
 	const [email, setEmail] = useState<string>('')
 	const [password, setPassword] = useState<string>('')
@@ -26,23 +25,21 @@ const SignIn = () => {
 		}
 	}, [session])
 
-	const handleSignIn = () => {
+	const hashPassword = trpc.user.comparePasswords.useQuery({
+		password: password,
+		hashedPassword: 'U2FsdGVkX18dCD8TsSNLaByfHviNNmVIdRqjlffdlpw=',
+	})
+
+	const handleSignIn = async (e: any) => {
+		e.preventDefault()
 		setError('')
 		setLoading(true)
-		signIn()
-		if (session && session.user) {
-			const thisUser = trpc.user.getUserByEmail.useQuery({
-				email: session.user.email!,
-			})
-			if (!thisUser) {
-				console.log('here')
-				firstLoginMutation.mutate({
-					email: session.user.email!,
-					name: session.user.name!,
-				})
-			}
-			router.push('/dashboard')
-		}
+		// const attemptLoginResponse = attemptLogin.data
+		// if (attemptLoginResponse?.success) {
+		// 	setLoading(false)
+		// 	console.log(attemptLoginResponse)
+		// }
+		// console.log(attemptLoginResponse)
 	}
 
 	return (
